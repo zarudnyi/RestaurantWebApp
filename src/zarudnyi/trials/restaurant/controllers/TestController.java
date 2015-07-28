@@ -4,6 +4,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import zarudnyi.trials.restaurant.config.ApplicationContextProvider;
+
+import javax.sql.DataSource;
 
 @Controller
 public class TestController {
@@ -12,8 +15,14 @@ public class TestController {
     public ModelAndView welcomePage() {
         ModelAndView model = new ModelAndView();
         model.addObject("title", "Hello World!");
-        model.addObject("message", "Welcome!!!");
         model.setViewName("helloworld");
+
+        ApplicationContextProvider appContext = new ApplicationContextProvider();
+
+
+
+
+
         return model;
     }
 }
