@@ -15,6 +15,14 @@ public class ApplicationContextProvider implements ApplicationContextAware {
         return context;
     }
 
+    public static Object getBean (String name){
+        return context.getBean(name);
+    }
+
+    public static <T> T getBean (String name, Class<T> clazz){
+        return context.getBean(name,clazz);
+    }
+
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         context=applicationContext;
     }

@@ -1,22 +1,21 @@
-package zarudnyi.trials.restaurant.model;
+package zarudnyi.trials.restaurant.model.dao;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
-
-public abstract class RestaurantAppDAO extends JdbcDaoSupport {
+public abstract class RestaurantAppDao extends JdbcDaoSupport {
 
     @Autowired
-    @Qualifier("dataSource")
-    protected DataSource dataSource;
+    private DataSource dataSource;
 
     @PostConstruct
-    private void init() {
+    private void initialize() {
         setDataSource(dataSource);
     }
+
 
 }
