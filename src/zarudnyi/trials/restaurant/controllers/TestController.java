@@ -8,8 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
 import zarudnyi.trials.restaurant.config.AppConfig;
 import zarudnyi.trials.restaurant.config.ApplicationContextProvider;
 import zarudnyi.trials.restaurant.model.dao.OrderDAO;
-import zarudnyi.trials.restaurant.model.dao.impl.OrderDAOImpl;
-import zarudnyi.trials.restaurant.model.services.OrderManager;
+import zarudnyi.trials.restaurant.model.dao.impl.OrderSQLiteDAOImpl;
 
 @Controller
 public class TestController {
@@ -19,10 +18,13 @@ public class TestController {
         ModelAndView model = new ModelAndView();
         model.addObject("title", "Hello World!");
         model.setViewName("helloworld");
+        AppConfig.resetSchema();
 
         ApplicationContext appContext = ApplicationContextProvider.getApplicationContext();
-        OrderDAOImpl orderDao = appContext.getBean("orderDao", OrderDAOImpl.class);
-        AppConfig.resetSchema();
+        OrderDAO orderDao = appContext.getBean("orderDao", OrderSQLiteDAOImpl.class);
+        Integer id = orderDao.placeOrder(1).getId();
+        id = orderDao.placeOrder(1).getId();
+
 
 
         return model;

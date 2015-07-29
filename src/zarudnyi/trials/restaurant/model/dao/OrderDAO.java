@@ -3,19 +3,21 @@ package zarudnyi.trials.restaurant.model.dao;
 
 import zarudnyi.trials.restaurant.model.entity.Order;
 
+import java.util.List;
+
 public interface OrderDAO {
 
-    Order placeGroupOrder(int userId, int groupId);
+    Order placeGroupOrder(Integer userId, Integer groupId);
 
-    Order placeOrder(int userId);
+    Order placeOrder(Integer userId);
 
-    void removeOrder(int orderId);
+    void removeOrder(Integer orderId);
 
     void updateOrder(Order order);
 
-    Order findById(int orderId);
+    Order findById(Integer orderId);
 
-    Order findByUserId(int userId);
+    List<Order> findByUserId(Integer userId);
 
 }
 

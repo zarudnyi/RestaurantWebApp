@@ -56,6 +56,7 @@ public class AppConfig {
                 "description TEXT," +
                 "checkout_sum INTEGER," +
                 "status_id INTEGER," +
+                "order_date DATE," +
                 "FOREIGN KEY (user_id) REFERENCES users(id)," +
                 "FOREIGN KEY (status_id) REFERENCES order_statuses(id)," +
                 "FOREIGN KEY (group_id) REFERENCES groups(id))");
