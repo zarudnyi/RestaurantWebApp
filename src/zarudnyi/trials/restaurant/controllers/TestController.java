@@ -28,9 +28,8 @@ public class TestController {
     @Autowired
     private GroupDAO groupDAO;
 
-    @Secured({SecurityConfig.ROLE_ADMIN} )
-    @RequestMapping(value = {"/"}, method = {RequestMethod.GET})
-    public ModelAndView welcomePage() {
+    @RequestMapping(value = {"/reset"}, method = {RequestMethod.GET})
+    public ModelAndView reset() {
         ModelAndView model = new ModelAndView();
         model.addObject("title", "Hello World!");
         model.setViewName("helloworld");
@@ -38,9 +37,6 @@ public class TestController {
 
 
         List<User> users = userDAO.findAll();
-
-        Order order = orderDAO.createOrder(users.get(0));
-
 
 
 

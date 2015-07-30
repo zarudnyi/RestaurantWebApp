@@ -5,7 +5,10 @@
     <title>Connoisseur</title>
     <link href="resources/styles/style.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="resources/styles/base.css" rel="stylesheet" type="text/css" media="screen" />
-    <link href="resources/styles/bootstrap.css" rel="stylesheet" type="text/css" media="screen" />
+
+    <link href="resources/styles/jumbotron-narrow.css" rel="stylesheet" type="text/css" media="screen" />
+
+
 
     <script type="text/javascript" src=" https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.js"></script>
     <script type="text/javascript" src="resources/scripts/jquery.pikachoose.js"></script>
@@ -34,8 +37,7 @@
             <span class="reservations-title">Call Us:</span>
             <hr class="hr-solid" />
             <span class="phone-number">+012 345 6789</span>
-            <hr class="hr-dashed" />
-            <div class="email-us"> <a class="button" href="#" title="Email Us">Or Email Us</a> </div>
+
         </div>
         <br />
         <br />

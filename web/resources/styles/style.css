@@ -607,14 +607,14 @@ label {
 	padding-bottom: 10px;
 	padding-top: 10px;
 }
-input[type="text"], textarea {
+input, textarea {
 	outline: none;
 	background: #f5f0e0;
 	border: 1px dotted #9C5959;
 	font-size: 14px;
 	padding: 3px;
 }
-input[type="text"] {
+input {
 	width: 300px;
 }
 textarea {

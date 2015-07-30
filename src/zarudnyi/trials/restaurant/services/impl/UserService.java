@@ -2,6 +2,7 @@ package zarudnyi.trials.restaurant.services.impl;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +23,12 @@ public class UserService implements UserDetailsService {
     private UserDAO userDAO;
 
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        User user = userDAO.findByLogin(s);
+        User user;
+        try{
+            user = userDAO.findByLogin(s);
+        }catch (EmptyResultDataAccessException e){
+            throw new UsernameNotFoundException(s);
+        }
 
         Set<GrantedAuthority> roles = new HashSet<GrantedAuthority>();
         if (user.isAdmin())

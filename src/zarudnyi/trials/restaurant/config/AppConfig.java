@@ -31,8 +31,8 @@ public class AppConfig {
                 "lname TEXT," +
                 "role INTEGER)");
 
-        jdbc.update("INSERT INTO users (fname,lname,role,login) VALUES (?,?,?,?)", "Ivan", "Zarudnyi",1,"zarudnyi");
-        jdbc.update("INSERT INTO users (fname,lname,login) VALUES (?,?,?)", "Natalia", "Sirobaba","sirobaba");
+        jdbc.update("INSERT INTO users (fname,lname,role,login, password) VALUES (?,?,?,?,?)", "Ivan", "Zarudnyi",1,"zarudnyi","{bcrypt}$2a$10$.Urwm2YffF5pW/MMXIJ5yeqV5RLxISUec2vxjA0psfnXgx.t4fVYO");
+        jdbc.update("INSERT INTO users (fname,lname,login,password) VALUES (?,?,?,?)", "Natalia", "Sirobaba","sirobaba","{bcrypt}$2a$10$maqWEu.4/0YD1XKzl9f8ee1s66E/bxmBw.AkRhdXPEEoEF/Y7J4sS");
 
 
         jdbc.execute("DROP TABLE IF EXISTS groups");
@@ -116,6 +116,7 @@ public class AppConfig {
                 "order_id INTEGER," +
                 "menu_item_id INTEGER," +
                 "description TEXT," +
+                "picture TEXT," +
                 "FOREIGN KEY (order_id) REFERENCES orders(id)," +
                 "FOREIGN KEY (menu_item_id) REFERENCES menu(id))" );
     }
