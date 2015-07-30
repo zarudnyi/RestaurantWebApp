@@ -1,7 +1,25 @@
 package zarudnyi.trials.restaurant.controllers;
 
-/**
- * Created by zarudnyi on 30.07.2015.
- */
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+import zarudnyi.trials.restaurant.config.AppConfig;
+import zarudnyi.trials.restaurant.model.entity.Order;
+import zarudnyi.trials.restaurant.model.entity.User;
+
+import java.util.List;
+
+@Controller
 public class LoginController {
+
+
+    @RequestMapping(value = {"/login"}, method = {RequestMethod.GET})
+    public ModelAndView loginPage() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("login");
+
+        return model;
+    }
+
 }

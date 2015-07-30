@@ -3,10 +3,12 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Connoisseur</title>
-    <link href="styles/style.css" rel="stylesheet" type="text/css" media="screen" />
-    <link href="styles/base.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="resources/styles/style.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="resources/styles/base.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="resources/styles/bootstrap.css" rel="stylesheet" type="text/css" media="screen" />
+
     <script type="text/javascript" src=" https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.js"></script>
-    <script type="text/javascript" src="scripts/jquery.pikachoose.js"></script>
+    <script type="text/javascript" src="resources/scripts/jquery.pikachoose.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $("#pikame").PikaChoose();	});
@@ -26,8 +28,7 @@
             </ul>
         </nav>
         <hgroup class="intro">
-            <h1 class="title">Connoisseur</h1>
-            <h3 class="tagline">Free Website Template By: <a href="http://www.priteshgupta.com">PriteshGupta.com</a></h3>
+            <h1 class="title">Awesome Restaurant</h1>
         </hgroup>
         <div class="reservations"><br />
             <span class="reservations-title">Call Us:</span>
