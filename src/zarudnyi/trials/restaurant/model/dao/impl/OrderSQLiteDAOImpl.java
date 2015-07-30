@@ -5,57 +5,29 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
 import zarudnyi.trials.restaurant.model.dao.OrderDAO;
 import zarudnyi.trials.restaurant.model.dao.RestaurantAppSQLiteDao;
+import zarudnyi.trials.restaurant.model.entity.Group;
 import zarudnyi.trials.restaurant.model.entity.Order;
+import zarudnyi.trials.restaurant.model.entity.User;
 
-import java.sql.*;
 import java.util.List;
 
 @Repository("orderDao")
 public class OrderSQLiteDAOImpl extends RestaurantAppSQLiteDao implements OrderDAO {
 
 
-    public Order placeGroupOrder(Integer userId, Integer groupId) {
+    public Order createGroupOrder(User user, Group group) {
 
-        Integer id = null;
-        Connection conn = getConnection();
-
-        try {
-            PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO orders (user_id, group_id,description,checkout_sum,status_id) VALUES (?,?,NULL ,NULL ,NULL )");
-            preparedStatement.setInt(1,userId);
-            if (groupId==null)
-                preparedStatement.setNull(2, Types.INTEGER);
-            else
-                preparedStatement.setInt(2, groupId);
-
-            preparedStatement.executeUpdate();
-
-            ResultSet resultSet = conn.prepareStatement("SELECT last_insert_rowid()").executeQuery();
-            resultSet.next();
-            id = resultSet.getInt(1);
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-
+        Integer id = genericInsert("INSERT INTO orders (user_id, group_id,description,checkout_sum,status_id) VALUES (?,?,NULL ,NULL ,NULL )",user.getId(),group==null?null:group.getId());
         return findById(id);
 
     }
 
-    public Order placeOrder(Integer userId) {
-        return placeGroupOrder(userId, null);
+    public Order createOrder(User user) {
+        return createGroupOrder(user, null);
     }
 
-    public void removeOrder(Integer orderId) {
-        jdbc.update("DELETE FROM orders WHERE id=?", orderId);
+    public void removeOrder(Order order) {
+        jdbc.update("DELETE FROM orders WHERE id=?", order.getId());
     }
 
     public void updateOrder(Order order) {
@@ -69,5 +41,9 @@ public class OrderSQLiteDAOImpl extends RestaurantAppSQLiteDao implements OrderD
 
     public List<Order> findByUserId(Integer userId) {
         return jdbc.query("SELECT * FROM orders WHERE user_id=?", new Object[]{userId}, new BeanPropertyRowMapper<Order>(Order.class));
+    }
+
+    public List<Order> findAll() {
+        return jdbc.query("SELECT * FROM orders ", new Object[]{}, new BeanPropertyRowMapper<Order>(Order.class));
     }
 }

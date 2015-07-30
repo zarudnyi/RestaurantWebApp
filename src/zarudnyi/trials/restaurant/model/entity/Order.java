@@ -2,8 +2,16 @@ package zarudnyi.trials.restaurant.model.entity;
 
 
 import java.util.Date;
+import java.util.Map;
 
 public class Order {
+    private static Map<Integer,String> statusMap;
+    static {
+        statusMap.put(1,"Received");
+        statusMap.put(2,"In Progress");
+        statusMap.put(3,"Completed");
+    }
+
     private Integer id;
     private Integer userId;
     private Integer groupId;
@@ -68,5 +76,53 @@ public class Order {
         this.checkOutSum = checkOutSum;
     }
 
+    public String getStatus(){
+        return statusMap.get(getStatusId());
+    }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Order)) return false;
+
+        Order order = (Order) o;
+
+        if (!getId().equals(order.getId())) return false;
+        if (getUserId() != null ? !getUserId().equals(order.getUserId()) : order.getUserId() != null) return false;
+        if (getGroupId() != null ? !getGroupId().equals(order.getGroupId()) : order.getGroupId() != null) return false;
+        if (getDescription() != null ? !getDescription().equals(order.getDescription()) : order.getDescription() != null)
+            return false;
+        if (getCheckOutSum() != null ? !getCheckOutSum().equals(order.getCheckOutSum()) : order.getCheckOutSum() != null)
+            return false;
+        if (getStatusId() != null ? !getStatusId().equals(order.getStatusId()) : order.getStatusId() != null)
+            return false;
+        return !(getOrderDate() != null ? !getOrderDate().equals(order.getOrderDate()) : order.getOrderDate() != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getId().hashCode();
+        result = 31 * result + (getUserId() != null ? getUserId().hashCode() : 0);
+        result = 31 * result + (getGroupId() != null ? getGroupId().hashCode() : 0);
+        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        result = 31 * result + (getCheckOutSum() != null ? getCheckOutSum().hashCode() : 0);
+        result = 31 * result + (getStatusId() != null ? getStatusId().hashCode() : 0);
+        result = 31 * result + (getOrderDate() != null ? getOrderDate().hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", groupId=" + groupId +
+                ", description='" + description + '\'' +
+                ", checkOutSum=" + checkOutSum +
+                ", statusId=" + statusId +
+                ", orderDate=" + orderDate +
+                '}';
+    }
 }

@@ -21,9 +21,10 @@ public class AppConfig {
         jdbc.execute("CREATE TABLE IF NOT EXISTS users " +
                 "(id INTEGER PRIMARY KEY," +
                 "fname TEXT," +
-                "lname TEXT)");
+                "lname TEXT," +
+                "role INTEGER)");
 
-        jdbc.update("INSERT INTO users (fname,lname) VALUES (?,?)", "Ivan", "Zarudnyi");
+        jdbc.update("INSERT INTO users (fname,lname,role) VALUES (?,?,?)", "Ivan", "Zarudnyi",1);
         jdbc.update("INSERT INTO users (fname,lname) VALUES (?,?)", "Natalia", "Sirobaba");
 
 
@@ -102,14 +103,14 @@ public class AppConfig {
 
 
 
-        jdbc.execute("DROP TABLE IF EXISTS order_item");
-        jdbc.execute("CREATE TABLE IF NOT EXISTS order_item " +
+        jdbc.execute("DROP TABLE IF EXISTS order_items");
+        jdbc.execute("CREATE TABLE IF NOT EXISTS order_items " +
                 "(id INTEGER PRIMARY KEY," +
                 "order_id INTEGER," +
-                "menu_id TEXT," +
+                "menu_item_id INTEGER," +
                 "description TEXT," +
                 "FOREIGN KEY (order_id) REFERENCES orders(id)," +
-                "FOREIGN KEY (menu_id) REFERENCES menu(id))" );
+                "FOREIGN KEY (menu_item_id) REFERENCES menu(id))" );
     }
 
     @Bean(name = "dataSource")

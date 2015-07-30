@@ -4,11 +4,9 @@ package zarudnyi.trials.restaurant.model.dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.sql.*;
 
@@ -17,32 +15,25 @@ public abstract class RestaurantAppSQLiteDao {
 
     protected JdbcTemplate jdbc;
 
-    @Autowired
-    public final void setDataSource(DataSource dataSource) {
-        if(this.jdbc == null || dataSource != this.jdbc.getDataSource()) {
-            this.jdbc = this.createJdbcTemplate(dataSource);
-            this.initTemplateConfig();
-        }
-
-    }
-
-    protected Integer genericInsert (String insertQuery, Object... params){
+    protected Integer genericInsert(String insertQuery, Object... params) {
         Integer id = null;
         Connection conn = getConnection();
 
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(insertQuery);
-            int i=0;
-            for (Object param:params){
+            int i = 0;
+            for (Object param : params) {
                 i++;
-                if (param==null)
-                    preparedStatement.setNull(i,Types.NULL);
+                if (param == null)
+                    preparedStatement.setNull(i, Types.NULL);
                 if (param instanceof Integer)
-                    preparedStatement.setInt(i,(Integer) param);
+                    preparedStatement.setInt(i, (Integer) param);
                 if (param instanceof String)
-                    preparedStatement.setString(i,(String) param);
+                    preparedStatement.setString(i, (String) param);
                 if (param instanceof Date)
-                    preparedStatement.setDate(i,(Date) param);
+                    preparedStatement.setDate(i, (Date) param);
+                if (param instanceof java.util.Date)
+                    preparedStatement.setDate(i, new Date(((java.util.Date) param).getTime()));
             }
 
             preparedStatement.executeUpdate();
@@ -54,7 +45,7 @@ public abstract class RestaurantAppSQLiteDao {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             try {
                 conn.close();
             } catch (SQLException e) {
@@ -72,7 +63,20 @@ public abstract class RestaurantAppSQLiteDao {
     }
 
     public final DataSource getDataSource() {
-        return this.jdbc != null?this.jdbc.getDataSource():null;
+        return this.jdbc != null ? this.jdbc.getDataSource() : null;
+    }
+
+    @Autowired
+    public final void setDataSource(DataSource dataSource) {
+        if (this.jdbc == null || dataSource != this.jdbc.getDataSource()) {
+            this.jdbc = this.createJdbcTemplate(dataSource);
+            this.initTemplateConfig();
+        }
+
+    }
+
+    public final JdbcTemplate getJdbcTemplate() {
+        return this.jdbc;
     }
 
     public final void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
@@ -80,15 +84,11 @@ public abstract class RestaurantAppSQLiteDao {
         this.initTemplateConfig();
     }
 
-    public final JdbcTemplate getJdbcTemplate() {
-        return this.jdbc;
-    }
-
     protected void initTemplateConfig() {
     }
 
     protected void checkDaoConfig() {
-        if(this.jdbc == null) {
+        if (this.jdbc == null) {
             throw new IllegalArgumentException("\'dataSource\' or \'jdbcTemplate\' is required");
         }
     }
