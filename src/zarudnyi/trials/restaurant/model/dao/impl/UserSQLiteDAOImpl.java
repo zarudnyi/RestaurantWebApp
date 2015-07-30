@@ -1,6 +1,8 @@
 package zarudnyi.trials.restaurant.model.dao.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import zarudnyi.trials.restaurant.model.dao.RestaurantAppSQLiteDao;
 import zarudnyi.trials.restaurant.model.dao.UserDAO;
@@ -12,14 +14,22 @@ import java.util.List;
 @Repository("userDao")
 public class UserSQLiteDAOImpl extends RestaurantAppSQLiteDao implements UserDAO{
 
-    public User createUser() {
-        Integer id = genericInsert("insert into users (fname,lname,role)values(null,null,null)");
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public User createUser(String login) {
+        Integer id = genericInsert("insert into users (login,password,fname,lname,role)values(?,null,null,null,null)",login);
         return findById(id);
     }
 
     public void updateUser(User user) {
-        jdbc.update("INSERT or REPLACE into USERS (id, fname,lname,role) values (?,?,?,?)",user.getId(),user.getFname(),user.getLname(),user.getRole());
+        String password;
+        if (!user.getPassword().contains("{bcrypt}"))
+            password = "{bcrypt}"+passwordEncoder.encode( user.getPassword());
+        else
+            password = user.getPassword();
 
+        jdbc.update("INSERT or REPLACE into USERS (id,login,password, fname,lname,role) values (?,?,?,?,?,?)",user.getId(),user.getLogin(),password,user.getFname(),user.getLname(),user.getRole());
     }
 
     public void removeUser(User user) {
@@ -28,6 +38,10 @@ public class UserSQLiteDAOImpl extends RestaurantAppSQLiteDao implements UserDAO
 
     public User findById(Integer id) {
         return jdbc.queryForObject("select * from users where id=?",new Object[]{id},new BeanPropertyRowMapper<User>(User.class));
+    }
+
+    public User findByLogin(String login) {
+        return jdbc.queryForObject("select * from users where login=?",new Object[]{login},new BeanPropertyRowMapper<User>(User.class));
     }
 
     public List<User> findAll() {

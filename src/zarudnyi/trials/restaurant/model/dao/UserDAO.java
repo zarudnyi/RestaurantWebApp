@@ -8,13 +8,15 @@ import java.util.List;
 
 public interface UserDAO {
 
-    User createUser();
+    User createUser(String login);
 
     void updateUser (User user);
 
     void removeUser (User user);
 
     User findById (Integer id);
+
+    User findByLogin (String login);
 
     List<User> findAll();
 

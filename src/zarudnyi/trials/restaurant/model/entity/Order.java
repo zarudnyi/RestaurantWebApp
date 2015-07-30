@@ -2,10 +2,11 @@ package zarudnyi.trials.restaurant.model.entity;
 
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Order {
-    private static Map<Integer,String> statusMap;
+    private static Map<Integer,String> statusMap = new HashMap<Integer, String>();
     static {
         statusMap.put(1,"Received");
         statusMap.put(2,"In Progress");

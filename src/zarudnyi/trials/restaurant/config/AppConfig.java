@@ -4,14 +4,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.sqlite.SQLiteDataSource;
+import zarudnyi.trials.restaurant.services.impl.UserService;
 
 import javax.sql.DataSource;
 
 
 @Configuration
-@ComponentScan({"zarudnyi.trials.restaurant.model.dao.impl","zarudnyi.trials.restaurant.model.services.impl"  })
+@ComponentScan({"zarudnyi.trials.restaurant.model.dao.impl", "zarudnyi.trials.restaurant.services"})
 public class AppConfig {
+
 
     public static void resetSchema() {
         DataSource ds = ApplicationContextProvider.getBean("dataSource", DataSource.class);
@@ -20,12 +25,14 @@ public class AppConfig {
         jdbc.execute("DROP TABLE IF EXISTS users");
         jdbc.execute("CREATE TABLE IF NOT EXISTS users " +
                 "(id INTEGER PRIMARY KEY," +
+                "login TEXT UNIQUE," +
+                "password TEXT," +
                 "fname TEXT," +
                 "lname TEXT," +
                 "role INTEGER)");
 
-        jdbc.update("INSERT INTO users (fname,lname,role) VALUES (?,?,?)", "Ivan", "Zarudnyi",1);
-        jdbc.update("INSERT INTO users (fname,lname) VALUES (?,?)", "Natalia", "Sirobaba");
+        jdbc.update("INSERT INTO users (fname,lname,role,login) VALUES (?,?,?,?)", "Ivan", "Zarudnyi",1,"zarudnyi");
+        jdbc.update("INSERT INTO users (fname,lname,login) VALUES (?,?,?)", "Natalia", "Sirobaba","sirobaba");
 
 
         jdbc.execute("DROP TABLE IF EXISTS groups");
@@ -113,7 +120,7 @@ public class AppConfig {
                 "FOREIGN KEY (menu_item_id) REFERENCES menu(id))" );
     }
 
-    @Bean(name = "dataSource")
+    @Bean
     public DataSource dataSource() {
 
         SQLiteDataSource sqLiteDataSource = new SQLiteDataSource();
@@ -121,6 +128,12 @@ public class AppConfig {
 
         return sqLiteDataSource;
     }
+
+    @Bean
+    public UserDetailsService userDetailsService(){
+        return new UserService();
+    }
+
 
 
 }

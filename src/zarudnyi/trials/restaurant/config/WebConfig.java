@@ -10,7 +10,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan({"zarudnyi.trials.restaurant.config","zarudnyi.trials.restaurant.controllers"})
+@ComponentScan({ "zarudnyi.trials.restaurant.config", "zarudnyi.trials.restaurant.controllers","zarudnyi.trials.restaurant.model.dao.impl"  })
 public class WebConfig {
 
     @Bean

@@ -9,6 +9,24 @@ public class User {
     private String lname;
     private Integer id;
     private Integer role;
+    private String login;
+    private String password;
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getFname() {
         return fname;
@@ -42,27 +60,8 @@ public class User {
         this.role = role;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-
-        User user = (User) o;
-
-        if (getFname() != null ? !getFname().equals(user.getFname()) : user.getFname() != null) return false;
-        if (getLname() != null ? !getLname().equals(user.getLname()) : user.getLname() != null) return false;
-        if (!getId().equals(user.getId())) return false;
-        return !(getRole() != null ? !getRole().equals(user.getRole()) : user.getRole() != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getFname() != null ? getFname().hashCode() : 0;
-        result = 31 * result + (getLname() != null ? getLname().hashCode() : 0);
-        result = 31 * result + getId().hashCode();
-        result = 31 * result + (getRole() != null ? getRole().hashCode() : 0);
-        return result;
+    public boolean isAdmin(){
+        return Integer.valueOf(1).equals(role);
     }
 
     @Override
@@ -72,6 +71,35 @@ public class User {
                 ", lname='" + lname + '\'' +
                 ", id=" + id +
                 ", role=" + role +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+
+        User user = (User) o;
+
+        if (getFname() != null ? !getFname().equals(user.getFname()) : user.getFname() != null) return false;
+        if (getLname() != null ? !getLname().equals(user.getLname()) : user.getLname() != null) return false;
+        if (getId() != null ? !getId().equals(user.getId()) : user.getId() != null) return false;
+        if (getRole() != null ? !getRole().equals(user.getRole()) : user.getRole() != null) return false;
+        if (getLogin() != null ? !getLogin().equals(user.getLogin()) : user.getLogin() != null) return false;
+        return !(getPassword() != null ? !getPassword().equals(user.getPassword()) : user.getPassword() != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getFname() != null ? getFname().hashCode() : 0;
+        result = 31 * result + (getLname() != null ? getLname().hashCode() : 0);
+        result = 31 * result + (getId() != null ? getId().hashCode() : 0);
+        result = 31 * result + (getRole() != null ? getRole().hashCode() : 0);
+        result = 31 * result + (getLogin() != null ? getLogin().hashCode() : 0);
+        result = 31 * result + (getPassword() != null ? getPassword().hashCode() : 0);
+        return result;
     }
 }
