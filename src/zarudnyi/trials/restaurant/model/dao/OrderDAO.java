@@ -21,7 +21,11 @@ public interface OrderDAO {
 
     List<Order> findByUserId(Integer userId);
 
+    List<Order> findByUserId(Integer userId, Integer statusId);
+
     List<Order> findAll();
+
+
 
 
 

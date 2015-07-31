@@ -7,10 +7,14 @@ import java.util.Map;
 
 public class Order {
     private static Map<Integer,String> statusMap = new HashMap<Integer, String>();
+    public static final Integer STATUS_RECEIVED = 1;
+    public static final Integer STATUS_IN_PROGRESS = 2;
+    public static final Integer STATUS_COMPLETED = 3;
+
     static {
-        statusMap.put(1,"Received");
-        statusMap.put(2,"In Progress");
-        statusMap.put(3,"Completed");
+        statusMap.put(STATUS_RECEIVED,"Received");
+        statusMap.put(STATUS_IN_PROGRESS,"In Progress");
+        statusMap.put(STATUS_COMPLETED,"Completed");
     }
 
     private Integer id;
@@ -80,6 +84,11 @@ public class Order {
     public String getStatus(){
         return statusMap.get(getStatusId());
     }
+
+    public boolean isGroupOrder(){
+        return groupId==null;
+    }
+
 
 
     @Override

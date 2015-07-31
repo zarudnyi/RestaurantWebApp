@@ -103,10 +103,17 @@ public class AppConfig {
                 "name TEXT," +
                 "price INTEGER," +
                 "description TEXT," +
+                "picture TEXT," +
                 "FOREIGN KEY (category_id) REFERENCES categories(id))" );
 
-        jdbc.update("INSERT INTO menu (category_id,name,price,description) VALUES (?,?,?,?)",1,"Beer",10,"");
-        jdbc.update("INSERT INTO menu (category_id,name,price,description) VALUES (?,?,?,?)",2,"Pasta",40,"");
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",1,"Beer",10,"","Craft-Beer-300x188.jpeg");
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Pasta",40,"","rice-pasta.jpg");
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Sweet Heat Burger",1019,"This juicy burger is topped with cheddar cheese, sweet jalape?o relish, crispy jalape?os, lettuce, tomato and a chipotle drizzle.","SweetHeatBurger.png");
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Chicken Kabob Salad",999,"Fresh mixed greens are topped with flame broiled marinated chicken tips, tomatoes, cucumbers, roasted red peppers, red onion and finished with feta cheese, Kalamata olives, fresh oregano and banana peppers. Served with creamy Mediterranean dressing.","ChixKabobSalad.png");
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Sweet Potato Crusted Cod",1199,"A North Atlantic cod filet is crusted with our signature sweet potato crumbs then oven roasted to perfection. Served with potato and vegetable and a refreshing tropical fruit salsa.","SweetPotatoCrustedCod.png");
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Sliced Sirloin",1199,"Steakhouse seasoned sirloin steak is flame broiled, then sliced and served with garlic red skin mashed potatoes topped with white cheddar cheese sauce and caramelized onions. Served with au jus for dipping and choice of vegetable.","SlicedSirloin.png");
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Bruschetta Chicken",1079,"Two lemon rosemary marinated chicken breasts are flame broiled and topped with seasoned tomatoes, fresh basil and fresh mozzarella cheese then finished with a balsamic glaze and grilled asparagus. Served with rice.","bruschetta-chicken.png");
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Chipotle Honey Mustard Turkey Wrap",959,"Sliced oven roasted turkey, crisp lettuce, tomatoes, smoked bacon and Monterey Jack and cheddar cheeses are drizzled with chipotle honey mustard sauce then wrapped up in a warm tortilla.","ChipotleTurkeyWrap.png");
 
 
 
@@ -116,7 +123,6 @@ public class AppConfig {
                 "order_id INTEGER," +
                 "menu_item_id INTEGER," +
                 "description TEXT," +
-                "picture TEXT," +
                 "FOREIGN KEY (order_id) REFERENCES orders(id)," +
                 "FOREIGN KEY (menu_item_id) REFERENCES menu(id))" );
     }

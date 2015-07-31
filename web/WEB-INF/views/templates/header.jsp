@@ -1,20 +1,40 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE HTML>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Connoisseur</title>
-    <link href="resources/styles/style.css" rel="stylesheet" type="text/css" media="screen" />
-    <link href="resources/styles/base.css" rel="stylesheet" type="text/css" media="screen" />
+    <title>Awesome Restaurant</title>
+    <link href="resources/styles/style.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="resources/styles/base.css" rel="stylesheet" type="text/css" media="screen"/>
 
-    <link href="resources/styles/jumbotron-narrow.css" rel="stylesheet" type="text/css" media="screen" />
-
+    <link href="resources/styles/jumbotron-narrow.css" rel="stylesheet" type="text/css" media="screen"/>
 
 
     <script type="text/javascript" src=" https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.js"></script>
     <script type="text/javascript" src="resources/scripts/jquery.pikachoose.js"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
-            $("#pikame").PikaChoose();	});
+        $(document).ready(function () {
+            $("#pikame").PikaChoose();
+
+
+            if (window.location.pathname == "/") {
+                $("a[href='/']").addClass("current");
+            }
+            if (window.location.pathname == "/menu") {
+                $("a[href='menu']").addClass("current");
+            }
+            if (window.location.pathname == "/contact") {
+                $("a[href='contact']").addClass("current");
+            }
+            if (window.location.pathname == "/gallery") {
+                $("a[href='gallery']").addClass("current");
+            }
+
+
+        })
+        ;
     </script>
 </head>
 <body>
@@ -22,29 +42,39 @@
     <header>
         <nav>
             <ul id="nav">
-                <li><a href="index.html" class="current">Home</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="menu.html">Menu</a></li>
-                <li><a href="gallery.html">Gallery</a></li>
-                <li><a href="reviews.html">Reviews</a></li>
+
+                <li><a href="/">Home</a></li>
+                <li><a href="menu">Menu</a></li>
+                <li><a href="gallery">Gallery</a></li>
+                <li><a href="profile">
+                    <c:choose>
+                        <c:when test="${condition1}">
+                            Profile
+                        </c:when>
+                        <c:otherwise>
+                            Login
+                        </c:otherwise>
+                    </c:choose>
+
+                </a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
         </nav>
         <hgroup class="intro">
             <h1 class="title">Awesome Restaurant</h1>
         </hgroup>
-        <div class="reservations"><br />
+        <div class="reservations"><br/>
             <span class="reservations-title">Call Us:</span>
-            <hr class="hr-solid" />
+            <hr class="hr-solid"/>
             <span class="phone-number">+012 345 6789</span>
 
         </div>
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
     </header>
     <div class="wrapper">

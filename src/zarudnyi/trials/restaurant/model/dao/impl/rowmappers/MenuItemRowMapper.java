@@ -18,11 +18,12 @@ public class MenuItemRowMapper implements RowMapper<MenuItem> {
         menuItem.setName(resultSet.getString(3));
         menuItem.setPrice(resultSet.getInt(4));
         menuItem.setDescription(resultSet.getString(5));
+        menuItem.setPicture(resultSet.getString(6));
 
         MenuCategory menuCategory = new MenuCategory();
-        menuCategory.setId(resultSet.getInt(6));
-        menuCategory.setName(resultSet.getString(7));
-        menuCategory.setDescription(resultSet.getString(8));
+        menuCategory.setId(resultSet.getInt(7));
+        menuCategory.setName(resultSet.getString(8));
+        menuCategory.setDescription(resultSet.getString(9));
 
         menuItem.setCategory(menuCategory);
 

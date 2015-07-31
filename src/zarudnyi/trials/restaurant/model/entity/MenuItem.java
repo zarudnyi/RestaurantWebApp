@@ -6,6 +6,16 @@ public class MenuItem {
     private String name;
     private Integer price;
     private String description;
+    private String picture;
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
 
     public MenuCategory getCategory() {
         return category;
@@ -47,14 +57,31 @@ public class MenuItem {
         this.description = description;
     }
 
+    public String getDollarPrice() {
+        String s = "" + price;
+        if (s.length() == 0) {
+            return "Free!";
+        }
+        if (s.length() > 2) {
+            return "$" + s.substring(0, s.length() - 2) + "." + s.substring(s.length() - 2, s.length());
+        }
+        if (s.length() > 1)
+            return "$0." + s;
+        if (s.length() == 1) {
+            return "$0.0"+s;
+        }
+        return "";
+    }
+
     @Override
     public String toString() {
         return "MenuItem{" +
-                "category=" + category +
-                ", id=" + id +
+                " id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
+                ", category=" + category +
                 ", description='" + description + '\'' +
+                ", picture='" + picture + '\'' +
                 '}';
     }
 
@@ -70,7 +97,9 @@ public class MenuItem {
         if (getId() != null ? !getId().equals(menuItem.getId()) : menuItem.getId() != null) return false;
         if (getName() != null ? !getName().equals(menuItem.getName()) : menuItem.getName() != null) return false;
         if (getPrice() != null ? !getPrice().equals(menuItem.getPrice()) : menuItem.getPrice() != null) return false;
-        return !(getDescription() != null ? !getDescription().equals(menuItem.getDescription()) : menuItem.getDescription() != null);
+        if (getDescription() != null ? !getDescription().equals(menuItem.getDescription()) : menuItem.getDescription() != null)
+            return false;
+        return !(getPicture() != null ? !getPicture().equals(menuItem.getPicture()) : menuItem.getPicture() != null);
 
     }
 
@@ -81,6 +110,8 @@ public class MenuItem {
         result = 31 * result + (getName() != null ? getName().hashCode() : 0);
         result = 31 * result + (getPrice() != null ? getPrice().hashCode() : 0);
         result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        result = 31 * result + (getPicture() != null ? getPicture().hashCode() : 0);
         return result;
     }
+
 }
