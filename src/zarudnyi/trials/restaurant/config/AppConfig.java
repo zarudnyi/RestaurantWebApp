@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.sqlite.SQLiteDataSource;
 import zarudnyi.trials.restaurant.model.entity.MenuCategory;
 import zarudnyi.trials.restaurant.services.impl.MenuService;
+import zarudnyi.trials.restaurant.services.impl.OrderService;
 import zarudnyi.trials.restaurant.services.impl.UserService;
 
 import javax.sql.DataSource;
@@ -18,6 +19,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan
+@Import({SecurityConfig.class,WebConfig.class})
 public class AppConfig {
 
 
@@ -149,6 +151,15 @@ public class AppConfig {
         return new MenuService();
     }
 
+    @Bean
+    public UserService userService(){
+        return new UserService();
+    }
+
+    @Bean
+    public OrderService orderService(){
+        return new OrderService();
+    }
 
 
 }

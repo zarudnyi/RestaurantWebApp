@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import zarudnyi.trials.restaurant.config.AppConfig;
 
 @Controller
 public class TestController {
@@ -16,8 +17,7 @@ public class TestController {
         ModelAndView model = new ModelAndView();
 
         model.setViewName("profile");
-        //    model.addObject("user", userService.getUserByLogin(currentUser()));
-
+        AppConfig.resetSchema();
 
         return model;
     }

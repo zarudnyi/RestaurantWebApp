@@ -81,13 +81,12 @@ public class MainController {
     }
 
 
-    @Secured("ROLE_TEST")
     @RequestMapping(value = {"/profile"}, method = {RequestMethod.GET})
     ModelAndView profilePage(){
         ModelAndView model = new ModelAndView();
 
         model.setViewName("profile");
-        //    model.addObject("user", userService.getUserByLogin(currentUser()));
+        model.addObject("user", userService.getUserByLogin(currentUser()));
 
 
         return model;

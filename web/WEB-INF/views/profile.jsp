@@ -5,7 +5,7 @@
 <br/>
 <br/>
 
-<h3>${user.toString()}</h3>
+<h3>${user.fname}</h3>
 
 <%@include file="order.jsp" %>
 <%@include file="templates/footer.jsp" %>
