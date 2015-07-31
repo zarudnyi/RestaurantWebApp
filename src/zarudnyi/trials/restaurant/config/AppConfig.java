@@ -3,18 +3,21 @@ package zarudnyi.trials.restaurant.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.sqlite.SQLiteDataSource;
+import zarudnyi.trials.restaurant.model.entity.MenuCategory;
+import zarudnyi.trials.restaurant.services.impl.MenuService;
 import zarudnyi.trials.restaurant.services.impl.UserService;
 
 import javax.sql.DataSource;
 
 
 @Configuration
-@ComponentScan({"zarudnyi.trials.restaurant.model.dao.impl", "zarudnyi.trials.restaurant.services"})
+@ComponentScan
 public class AppConfig {
 
 
@@ -139,6 +142,11 @@ public class AppConfig {
     @Bean
     public UserDetailsService userDetailsService(){
         return new UserService();
+    }
+
+    @Bean
+    public MenuService menuService(){
+        return new MenuService();
     }
 
 

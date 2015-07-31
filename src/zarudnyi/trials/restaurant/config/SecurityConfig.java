@@ -23,6 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String ROLE_USER  = "ROLE_USER";
 
 
+
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -32,16 +33,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
 
+
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf()
                 .disable()
-                .authorizeRequests()
-                .antMatchers("/resources/**", "/**").permitAll()
+                .authorizeRequests().antMatchers("/**").permitAll()
                 .anyRequest().permitAll()
                 .and();
+
+
 
         http.formLogin()
                 .loginPage("/login")

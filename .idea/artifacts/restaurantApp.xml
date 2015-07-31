@@ -26,6 +26,8 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-web:4.0.5.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-webmvc:4.0.5.RELEASE" />
           <element id="library" level="project" name="Maven: org.xerial:sqlite-jdbc:3.7.2" />
+          <element id="library" level="project" name="Maven: org.springframework.security:spring-security-acl:3.2.4.RELEASE" />
+          <element id="library" level="project" name="Maven: org.springframework.security:spring-security-taglibs:3.2.4.RELEASE" />
         </element>
         <element id="directory" name="classes">
           <element id="module-output" name="RestaurantWebApp" />

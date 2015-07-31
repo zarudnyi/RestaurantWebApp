@@ -47,15 +47,15 @@
                 <li><a href="menu">Menu</a></li>
                 <li><a href="gallery">Gallery</a></li>
                 <li><a href="profile">
+                    <sec:authorize access="isAuthenticated()" var="authenticated" />
                     <c:choose>
-                        <c:when test="${condition1}">
+                        <c:when test="${authenticated}">
                             Profile
                         </c:when>
                         <c:otherwise>
                             Login
                         </c:otherwise>
                     </c:choose>
-
                 </a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>

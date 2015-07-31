@@ -38,4 +38,8 @@ public class UserService implements UserDetailsService {
 
         return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword() ,roles );
     }
+
+    public User getUserByLogin(String login){
+        return userDAO.findByLogin(login);
+    }
 }

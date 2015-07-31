@@ -2,21 +2,34 @@ package zarudnyi.trials.restaurant.controllers;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import zarudnyi.trials.restaurant.config.SecurityConfig;
+import zarudnyi.trials.restaurant.model.dao.GroupDAO;
+import zarudnyi.trials.restaurant.model.dao.OrderDAO;
+import zarudnyi.trials.restaurant.model.dao.UserDAO;
 import zarudnyi.trials.restaurant.model.entity.MenuCategory;
 import zarudnyi.trials.restaurant.model.entity.MenuItem;
 import zarudnyi.trials.restaurant.services.impl.MenuService;
+import zarudnyi.trials.restaurant.services.impl.UserService;
 
 import java.util.*;
 
 @Controller
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class MainController {
 
     @Autowired
     MenuService menuService;
+
+    @Autowired
+    UserService userService;
 
     @RequestMapping(value = {"/"}, method = {RequestMethod.GET})
     ModelAndView indexPage(){
@@ -67,6 +80,23 @@ public class MainController {
         return model;
     }
 
+
+    @Secured("ROLE_TEST")
+    @RequestMapping(value = {"/profile"}, method = {RequestMethod.GET})
+    ModelAndView profilePage(){
+        ModelAndView model = new ModelAndView();
+
+        model.setViewName("profile");
+        //    model.addObject("user", userService.getUserByLogin(currentUser()));
+
+
+        return model;
+    }
+
+    private String currentUser(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth.getName();
+    }
 
 
 }
