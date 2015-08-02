@@ -1,9 +1,11 @@
 package zarudnyi.trials.restaurant.config;
 
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +22,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan
-@Import({SecurityConfig.class,WebConfig.class})
+@Import({SecurityConfig.class, WebConfig.class})
 public class AppConfig {
 
 
@@ -63,7 +65,6 @@ public class AppConfig {
         jdbc.update("INSERT INTO order_statuses (name,description) VALUES (?,?)", "Completed", "");
 
 
-
         jdbc.execute("DROP TABLE IF EXISTS orders");
         jdbc.execute("CREATE TABLE IF NOT EXISTS orders " +
                 "(id INTEGER PRIMARY KEY," +
@@ -78,7 +79,6 @@ public class AppConfig {
                 "FOREIGN KEY (group_id) REFERENCES groups(id))");
 
 
-
         jdbc.execute("DROP TABLE IF EXISTS user_group");
         jdbc.execute("CREATE TABLE IF NOT EXISTS user_group " +
                 "(user_id INTEGER," +
@@ -91,8 +91,6 @@ public class AppConfig {
         jdbc.update("INSERT INTO user_group (user_id,group_id, option) VALUES (?,?,?)", 2, 1, 0);
 
 
-
-
         jdbc.execute("DROP TABLE IF EXISTS categories");
         jdbc.execute("CREATE TABLE IF NOT EXISTS categories " +
                 "(id INTEGER PRIMARY KEY," +
@@ -101,7 +99,6 @@ public class AppConfig {
 
         jdbc.update("INSERT INTO categories (name,description) VALUES (?,?)", "Beverage", "");
         jdbc.update("INSERT INTO categories (name,description) VALUES (?,?)", "Dish", "");
-
 
 
         jdbc.execute("DROP TABLE IF EXISTS menu");
@@ -114,14 +111,13 @@ public class AppConfig {
                 "picture TEXT," +
                 "FOREIGN KEY (category_id) REFERENCES categories(id))");
 
-        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2, "Sweet Heat Burger", 1019, "This juicy burger is topped with cheddar cheese, sweet jalape?o relish, crispy jalape?os, lettuce, tomato and a chipotle drizzle.", "SweetHeatBurger.png");
-        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Chicken Kabob Salad",999,"Fresh mixed greens are topped with flame broiled marinated chicken tips, tomatoes, cucumbers, roasted red peppers, red onion and finished with feta cheese, Kalamata olives, fresh oregano and banana peppers. Served with creamy Mediterranean dressing.","ChixKabobSalad.png");
-        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Sweet Potato Crusted Cod",1199,"A North Atlantic cod filet is crusted with our signature sweet potato crumbs then oven roasted to perfection. Served with potato and vegetable and a refreshing tropical fruit salsa.","SweetPotatoCrustedCod.png");
-        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Sliced Sirloin",1199,"Steakhouse seasoned sirloin steak is flame broiled, then sliced and served with garlic red skin mashed potatoes topped with white cheddar cheese sauce and caramelized onions. Served with au jus for dipping and choice of vegetable.","SlicedSirloin.png");
-        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Bruschetta Chicken",1079,"Two lemon rosemary marinated chicken breasts are flame broiled and topped with seasoned tomatoes, fresh basil and fresh mozzarella cheese then finished with a balsamic glaze and grilled asparagus. Served with rice.","bruschetta-chicken.png");
-        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Chipotle Honey Mustard Turkey Wrap",959,"Sliced oven roasted turkey, crisp lettuce, tomatoes, smoked bacon and Monterey Jack and cheddar cheeses are drizzled with chipotle honey mustard sauce then wrapped up in a warm tortilla.","ChipotleTurkeyWrap.png");
-        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",1,"Beer",10,"","Craft-Beer-300x188.jpeg");
-
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)", 2, "Sweet Heat Burger", 1019, "This juicy burger is topped with cheddar cheese, sweet jalape?o relish, crispy jalape?os, lettuce, tomato and a chipotle drizzle.", "SweetHeatBurger.png");
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)", 2, "Chicken Kabob Salad", 999, "Fresh mixed greens are topped with flame broiled marinated chicken tips, tomatoes, cucumbers, roasted red peppers, red onion and finished with feta cheese, Kalamata olives, fresh oregano and banana peppers. Served with creamy Mediterranean dressing.", "ChixKabobSalad.png");
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)", 2, "Sweet Potato Crusted Cod", 1199, "A North Atlantic cod filet is crusted with our signature sweet potato crumbs then oven roasted to perfection. Served with potato and vegetable and a refreshing tropical fruit salsa.", "SweetPotatoCrustedCod.png");
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)", 2, "Sliced Sirloin", 1199, "Steakhouse seasoned sirloin steak is flame broiled, then sliced and served with garlic red skin mashed potatoes topped with white cheddar cheese sauce and caramelized onions. Served with au jus for dipping and choice of vegetable.", "SlicedSirloin.png");
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)", 2, "Bruschetta Chicken", 1079, "Two lemon rosemary marinated chicken breasts are flame broiled and topped with seasoned tomatoes, fresh basil and fresh mozzarella cheese then finished with a balsamic glaze and grilled asparagus. Served with rice.", "bruschetta-chicken.png");
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)", 2, "Chipotle Honey Mustard Turkey Wrap", 959, "Sliced oven roasted turkey, crisp lettuce, tomatoes, smoked bacon and Monterey Jack and cheddar cheeses are drizzled with chipotle honey mustard sauce then wrapped up in a warm tortilla.", "ChipotleTurkeyWrap.png");
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)", 1, "Beer", 10, "", "Craft-Beer-300x188.jpeg");
 
 
         jdbc.execute("DROP TABLE IF EXISTS order_items");
@@ -131,7 +127,7 @@ public class AppConfig {
                 "menu_item_id INTEGER," +
                 "description TEXT," +
                 "FOREIGN KEY (order_id) REFERENCES orders(id)," +
-                "FOREIGN KEY (menu_item_id) REFERENCES menu(id))" );
+                "FOREIGN KEY (menu_item_id) REFERENCES menu(id))");
     }
 
     @Bean
@@ -144,29 +140,37 @@ public class AppConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(){
+    public UserDetailsService userDetailsService() {
         return new UserService();
     }
 
     @Bean
-    public MenuService menuService(){
+    public MenuService menuService() {
         return new MenuService();
     }
 
     @Bean
-    public UserService userService(){
+    public UserService userService() {
         return new UserService();
     }
 
     @Bean
-    public OrderService orderService(){
+    public OrderService orderService() {
         return new OrderService();
     }
 
 
     @Bean
-    public UserValidator userValidator(){
+    public UserValidator userValidator() {
         return new UserValidator();
+    }
+
+    @Bean
+    public MessageSource messageSource() {
+        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        messageSource.setBasename("zarudnyi\\trials\\restaurant\\model\\validator\\resources\\messages");
+
+        return messageSource;
     }
 
 }

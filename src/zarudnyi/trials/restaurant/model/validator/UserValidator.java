@@ -14,17 +14,20 @@ public class UserValidator extends SimpleValidator {
         User user = (User) target;
 
         if(!checkString(user.getLogin())) {
-            errors.rejectValue("login", "Empty");
+            errors.rejectValue("login", "bad");
+        }
+        if(isEmptyOrNull(user.getLogin())) {
+            errors.rejectValue("login", "empty");
         }
         if(checkStringHasSpecialChar(user.getFname())) {
-            errors.rejectValue("fname", "Wrong");
+            errors.rejectValue("fname", "bad");
         }
 
         if(isEmptyOrNull(user.getLname())) {
-            errors.rejectValue("lname", "Wrong");
+            errors.rejectValue("lname", "bad");
         }
         if(user.getPassword()==null || user.getPassword().isEmpty()) {
-            errors.rejectValue("password", "Empty");
+            errors.rejectValue("password", "empty");
         }
 
     }

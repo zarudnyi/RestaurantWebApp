@@ -73,21 +73,19 @@ public class UserController {
         ModelAndView model = new ModelAndView();
 
         model.setViewName("register");
+        model.addObject("user", new User());
         return model;
     }
 
     @RequestMapping(value = {"/register"}, method = {RequestMethod.POST})
-    public ModelAndView registerUser(@ModelAttribute User user, Errors result) {
+    public ModelAndView registerUser(@ModelAttribute User user, BindingResult result) {
 
         userValidator.validate(user, result);
 
         if (result.hasErrors()){
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("register");
-            List<ObjectError> allErrors = result.getAllErrors();
-
-
-            modelAndView.addObject("errors",result.getAllErrors());
+            modelAndView.addObject("command",user);
             return modelAndView;
         }
 

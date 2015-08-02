@@ -22,6 +22,15 @@ public class TestController {
         return model;
     }
 
+    @RequestMapping(value = {"/test"}, method = {RequestMethod.GET})
+    ModelAndView test(){
+
+            ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("helloworld");
+
+        return modelAndView;
+    }
+
 
 
 }
