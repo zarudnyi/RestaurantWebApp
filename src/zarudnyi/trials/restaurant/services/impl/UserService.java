@@ -39,6 +39,10 @@ public class UserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword() ,roles );
     }
 
+    public void updateUser(User user){
+        userDAO.updateUser(user);
+    }
+
     public User getUserByLogin(String login){
         return userDAO.findByLogin(login);
     }

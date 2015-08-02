@@ -28,8 +28,7 @@ public class MainController {
     @Autowired
     MenuService menuService;
 
-    @Autowired
-    UserService userService;
+
 
     @RequestMapping(value = {"/"}, method = {RequestMethod.GET})
     ModelAndView indexPage(){
@@ -81,21 +80,9 @@ public class MainController {
     }
 
 
-    @RequestMapping(value = {"/profile"}, method = {RequestMethod.GET})
-    ModelAndView profilePage(){
-        ModelAndView model = new ModelAndView();
-
-        model.setViewName("profile");
-        model.addObject("user", userService.getUserByLogin(currentUser()));
 
 
-        return model;
-    }
 
-    private String currentUser(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getName();
-    }
 
 
 }

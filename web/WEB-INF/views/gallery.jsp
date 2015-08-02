@@ -1,6 +1,6 @@
 <%@include file="templates/header.jsp" %>
+<div class="border2"></div>
 
-<div class="border"></div>
 <article class="fullwidth gallery">
     <h3>Gallery</h3>
     <c:forEach var="item" items="${gallery}">

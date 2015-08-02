@@ -36,15 +36,17 @@ public class AppConfig {
                 "lname TEXT," +
                 "role INTEGER)");
 
-        jdbc.update("INSERT INTO users (fname,lname,role,login, password) VALUES (?,?,?,?,?)", "Ivan", "Zarudnyi",1,"zarudnyi","{bcrypt}$2a$10$.Urwm2YffF5pW/MMXIJ5yeqV5RLxISUec2vxjA0psfnXgx.t4fVYO");
-        jdbc.update("INSERT INTO users (fname,lname,login,password) VALUES (?,?,?,?)", "Natalia", "Sirobaba","sirobaba","{bcrypt}$2a$10$maqWEu.4/0YD1XKzl9f8ee1s66E/bxmBw.AkRhdXPEEoEF/Y7J4sS");
+        jdbc.update("INSERT INTO users (fname,lname,role,login, password) VALUES (?,?,?,?,?)", "", "", 1, "admin", "{bcrypt}$2a$10$pgHG1CHKLwT6ZyuQiclPUu72ySVrq0z8sRJtsUwFB6ii277Cio0Ne");
+
+        jdbc.update("INSERT INTO users (fname,lname,role,login, password) VALUES (?,?,?,?,?)", "Ivan", "Zarudnyi", 0, "zarudnyi", "{bcrypt}$2a$10$.Urwm2YffF5pW/MMXIJ5yeqV5RLxISUec2vxjA0psfnXgx.t4fVYO");
+        jdbc.update("INSERT INTO users (fname,lname,login,password) VALUES (?,?,?,?)", "Natalia", "Sirobaba", "sirobaba", "{bcrypt}$2a$10$maqWEu.4/0YD1XKzl9f8ee1s66E/bxmBw.AkRhdXPEEoEF/Y7J4sS");
 
 
         jdbc.execute("DROP TABLE IF EXISTS groups");
         jdbc.execute("CREATE TABLE IF NOT EXISTS groups " +
                 "(id INTEGER PRIMARY KEY," +
                 "name TEXT," +
-                "description TEXT)" );
+                "description TEXT)");
 
         jdbc.update("INSERT INTO groups (name,description) VALUES (?,?)", "Awesome Party", "");
 
@@ -53,7 +55,7 @@ public class AppConfig {
         jdbc.execute("CREATE TABLE IF NOT EXISTS order_statuses " +
                 "(id INTEGER PRIMARY KEY," +
                 "name TEXT," +
-                "description TEXT)" );
+                "description TEXT)");
 
         jdbc.update("INSERT INTO order_statuses (name,description) VALUES (?,?)", "Received", "");
         jdbc.update("INSERT INTO order_statuses (name,description) VALUES (?,?)", "In Progress", "");
@@ -96,8 +98,8 @@ public class AppConfig {
                 "name TEXT," +
                 "description TEXT)");
 
-        jdbc.update("INSERT INTO categories (name,description) VALUES (?,?)","Beverage","");
-        jdbc.update("INSERT INTO categories (name,description) VALUES (?,?)","Dish","");
+        jdbc.update("INSERT INTO categories (name,description) VALUES (?,?)", "Beverage", "");
+        jdbc.update("INSERT INTO categories (name,description) VALUES (?,?)", "Dish", "");
 
 
 
@@ -109,16 +111,15 @@ public class AppConfig {
                 "price INTEGER," +
                 "description TEXT," +
                 "picture TEXT," +
-                "FOREIGN KEY (category_id) REFERENCES categories(id))" );
+                "FOREIGN KEY (category_id) REFERENCES categories(id))");
 
-        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",1,"Beer",10,"","Craft-Beer-300x188.jpeg");
-        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Pasta",40,"","rice-pasta.jpg");
-        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Sweet Heat Burger",1019,"This juicy burger is topped with cheddar cheese, sweet jalape?o relish, crispy jalape?os, lettuce, tomato and a chipotle drizzle.","SweetHeatBurger.png");
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2, "Sweet Heat Burger", 1019, "This juicy burger is topped with cheddar cheese, sweet jalape?o relish, crispy jalape?os, lettuce, tomato and a chipotle drizzle.", "SweetHeatBurger.png");
         jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Chicken Kabob Salad",999,"Fresh mixed greens are topped with flame broiled marinated chicken tips, tomatoes, cucumbers, roasted red peppers, red onion and finished with feta cheese, Kalamata olives, fresh oregano and banana peppers. Served with creamy Mediterranean dressing.","ChixKabobSalad.png");
         jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Sweet Potato Crusted Cod",1199,"A North Atlantic cod filet is crusted with our signature sweet potato crumbs then oven roasted to perfection. Served with potato and vegetable and a refreshing tropical fruit salsa.","SweetPotatoCrustedCod.png");
         jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Sliced Sirloin",1199,"Steakhouse seasoned sirloin steak is flame broiled, then sliced and served with garlic red skin mashed potatoes topped with white cheddar cheese sauce and caramelized onions. Served with au jus for dipping and choice of vegetable.","SlicedSirloin.png");
         jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Bruschetta Chicken",1079,"Two lemon rosemary marinated chicken breasts are flame broiled and topped with seasoned tomatoes, fresh basil and fresh mozzarella cheese then finished with a balsamic glaze and grilled asparagus. Served with rice.","bruschetta-chicken.png");
         jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",2,"Chipotle Honey Mustard Turkey Wrap",959,"Sliced oven roasted turkey, crisp lettuce, tomatoes, smoked bacon and Monterey Jack and cheddar cheeses are drizzled with chipotle honey mustard sauce then wrapped up in a warm tortilla.","ChipotleTurkeyWrap.png");
+        jdbc.update("INSERT INTO menu (category_id,name,price,description,picture) VALUES (?,?,?,?,?)",1,"Beer",10,"","Craft-Beer-300x188.jpeg");
 
 
 
