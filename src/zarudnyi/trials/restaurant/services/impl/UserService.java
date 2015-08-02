@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import zarudnyi.trials.restaurant.config.SecurityConfig;
 import zarudnyi.trials.restaurant.model.dao.UserDAO;
 import zarudnyi.trials.restaurant.model.entity.User;
+import zarudnyi.trials.restaurant.model.validator.UserValidator;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,6 +22,7 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserDAO userDAO;
+
 
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         User user;
@@ -35,12 +37,20 @@ public class UserService implements UserDetailsService {
             roles.add(new SimpleGrantedAuthority(SecurityConfig.ROLE_ADMIN));
 
         roles.add(new SimpleGrantedAuthority(SecurityConfig.ROLE_USER));
+        String password = user.getPassword()==null?"":user.getPassword();
+        if (password.contains("{bcrypt}"))
+            password= password.substring(8);
 
-        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword() ,roles );
+
+        return new org.springframework.security.core.userdetails.User(user.getLogin(),password ,roles );
     }
 
     public void updateUser(User user){
         userDAO.updateUser(user);
+    }
+
+    public User createUser(String login){
+        return userDAO.createUser(login);
     }
 
     public User getUserByLogin(String login){

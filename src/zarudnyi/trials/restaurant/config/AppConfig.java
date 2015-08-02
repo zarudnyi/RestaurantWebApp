@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.sqlite.SQLiteDataSource;
 import zarudnyi.trials.restaurant.model.entity.MenuCategory;
+import zarudnyi.trials.restaurant.model.validator.UserValidator;
 import zarudnyi.trials.restaurant.services.impl.MenuService;
 import zarudnyi.trials.restaurant.services.impl.OrderService;
 import zarudnyi.trials.restaurant.services.impl.UserService;
@@ -162,5 +163,10 @@ public class AppConfig {
         return new OrderService();
     }
 
+
+    @Bean
+    public UserValidator userValidator(){
+        return new UserValidator();
+    }
 
 }

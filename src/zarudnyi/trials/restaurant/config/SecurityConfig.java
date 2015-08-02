@@ -41,9 +41,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf()
                 .disable()
-                .authorizeRequests().antMatchers(HttpMethod.POST, "/**").authenticated()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/register*").permitAll()
                 .antMatchers("/profile**").authenticated()
                 .antMatchers("/groups**").authenticated()
+                .antMatchers(HttpMethod.POST, "/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/menu**").access("hasRole('"+SecurityConfig.ROLE_ADMIN+"')")
                 .anyRequest().permitAll().and();
 
@@ -53,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
                 .defaultSuccessUrl("/")
                 .loginProcessingUrl("/j_spring_security_check")
-                .failureUrl("/login?error")
+                .failureUrl("/login?error=true")
                 .usernameParameter("j_username")
                 .passwordParameter("j_password")
                 .permitAll();

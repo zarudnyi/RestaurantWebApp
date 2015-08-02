@@ -16,7 +16,7 @@ public class TestController {
     ModelAndView profilePage(){
         ModelAndView model = new ModelAndView();
 
-        model.setViewName("profile");
+        model.setViewName("index");
         AppConfig.resetSchema();
 
         return model;

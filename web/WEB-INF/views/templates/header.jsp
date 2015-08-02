@@ -31,7 +31,7 @@
             if (window.location.pathname == "/gallery") {
                 $("a[href='gallery']").addClass("current");
             }
-            if (window.location.pathname == "/profile" || window.location.pathname == "/login" ) {
+            if (window.location.pathname == "/profile" || window.location.pathname == "/login" || window.location.pathname == "/updateUser" ) {
                 $("a[href='profile']").addClass("current");
             }
 

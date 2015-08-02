@@ -5,6 +5,11 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import zarudnyi.trials.restaurant.config.AppConfig;
 import zarudnyi.trials.restaurant.model.entity.Order;
 import zarudnyi.trials.restaurant.model.entity.User;
+import zarudnyi.trials.restaurant.model.validator.UserValidator;
 import zarudnyi.trials.restaurant.services.impl.UserService;
 
 import java.util.List;
@@ -20,6 +26,10 @@ import java.util.List;
 public class UserController {
     @Autowired
     UserService userService;
+
+
+    @Autowired
+    private UserValidator userValidator;
 
     @RequestMapping(value = {"/login"}, method = {RequestMethod.GET})
     public ModelAndView loginPage() {
@@ -30,7 +40,7 @@ public class UserController {
     }
 
     @RequestMapping(value = {"/profile"}, method = {RequestMethod.GET})
-    ModelAndView profilePage(){
+    ModelAndView profilePage() {
         ModelAndView model = new ModelAndView();
 
         model.setViewName("profile");
@@ -44,21 +54,49 @@ public class UserController {
     public ModelAndView updateUser(@RequestParam("fname") String fname,
                                    @RequestParam("lname") String lname,
                                    @RequestParam("password") String password) {
-        ModelAndView model = new ModelAndView();
-        model.setViewName("profile");
         User curUser = userService.getUserByLogin(currentUser());
 
         curUser.setFname(fname);
         curUser.setLname(lname);
-        if (password!=null && !password.isEmpty())
+        if (password != null && !password.isEmpty())
             curUser.setPassword(password);
 
         userService.updateUser(curUser);
 
+        return new ModelAndView("redirect:/profile");
+
+
+    }
+
+    @RequestMapping(value = {"/register"}, method = {RequestMethod.GET})
+    ModelAndView registerPage() {
+        ModelAndView model = new ModelAndView();
+
+        model.setViewName("register");
         return model;
     }
 
-    private String currentUser(){
+    @RequestMapping(value = {"/register"}, method = {RequestMethod.POST})
+    public ModelAndView registerUser(@ModelAttribute User user, Errors result) {
+
+        userValidator.validate(user, result);
+
+        if (result.hasErrors()){
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("register");
+            List<ObjectError> allErrors = result.getAllErrors();
+
+
+            modelAndView.addObject("errors",result.getAllErrors());
+            return modelAndView;
+        }
+
+
+        return new ModelAndView("redirect:/profile");
+
+    }
+
+    private String currentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return auth.getName();
     }

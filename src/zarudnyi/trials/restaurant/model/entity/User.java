@@ -21,10 +21,7 @@ public class User {
     }
 
     public String getPassword() {
-        if (password!=null && password.contains("{bcrypt}"))
-            return password.substring(8);
-        else
-            return password;
+        return password;
     }
 
     public void setPassword(String password) {

@@ -3,6 +3,7 @@
 <div class="border2"></div>
 <article>
     <h4>Hello ${user.fname==null?user.login:user.fname}</h4>
+
     <form name="updateUser" action="updateUser" method="post">
         <label>
             Login<br>
@@ -20,8 +21,9 @@
             New Password<br>
             <input name="password" type="password" value=""><br>
         </label>
-        <button type="submit">Update</button>
+        <button class="button" type="submit">Update</button>
     </form>
+    <h5><a href="/logout">Logout </a></h5>
 
 
 </article>
