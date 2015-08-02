@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.sqlite.SQLiteDataSource;
 import zarudnyi.trials.restaurant.model.entity.MenuCategory;
 import zarudnyi.trials.restaurant.model.validator.UserValidator;
+import zarudnyi.trials.restaurant.services.impl.GroupService;
 import zarudnyi.trials.restaurant.services.impl.MenuService;
 import zarudnyi.trials.restaurant.services.impl.OrderService;
 import zarudnyi.trials.restaurant.services.impl.UserService;
@@ -39,10 +40,10 @@ public class AppConfig {
                 "lname TEXT," +
                 "role INTEGER)");
 
-        jdbc.update("INSERT INTO users (fname,lname,role,login, password) VALUES (?,?,?,?,?)", "", "", 1, "admin", "{bcrypt}$2a$10$pgHG1CHKLwT6ZyuQiclPUu72ySVrq0z8sRJtsUwFB6ii277Cio0Ne");
 
         jdbc.update("INSERT INTO users (fname,lname,role,login, password) VALUES (?,?,?,?,?)", "Ivan", "Zarudnyi", 0, "zarudnyi", "{bcrypt}$2a$10$.Urwm2YffF5pW/MMXIJ5yeqV5RLxISUec2vxjA0psfnXgx.t4fVYO");
         jdbc.update("INSERT INTO users (fname,lname,login,password) VALUES (?,?,?,?)", "Natalia", "Sirobaba", "sirobaba", "{bcrypt}$2a$10$maqWEu.4/0YD1XKzl9f8ee1s66E/bxmBw.AkRhdXPEEoEF/Y7J4sS");
+        jdbc.update("INSERT INTO users (fname,lname,role,login, password) VALUES (?,?,?,?,?)", "", "", 1, "admin", "{bcrypt}$2a$10$pgHG1CHKLwT6ZyuQiclPUu72ySVrq0z8sRJtsUwFB6ii277Cio0Ne");
 
 
         jdbc.execute("DROP TABLE IF EXISTS groups");
@@ -158,7 +159,10 @@ public class AppConfig {
     public OrderService orderService() {
         return new OrderService();
     }
-
+    @Bean
+    public GroupService groupService() {
+        return new GroupService();
+    }
 
     @Bean
     public UserValidator userValidator() {

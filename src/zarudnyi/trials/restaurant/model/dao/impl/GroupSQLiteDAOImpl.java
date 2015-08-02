@@ -23,7 +23,7 @@ public class GroupSQLiteDAOImpl extends RestaurantAppSQLiteDao implements GroupD
     }
 
     public Group findById(Integer id) {
-        return jdbc.queryForObject("select * from groups where id=?",new Object[]{id},new BeanPropertyRowMapper<Group>(Group.class));
+        return jdbc.queryForObject("select * from groups where id=?", new Object[]{id}, new BeanPropertyRowMapper<Group>(Group.class));
     }
 
     public List<Group> findAll() {
@@ -31,6 +31,7 @@ public class GroupSQLiteDAOImpl extends RestaurantAppSQLiteDao implements GroupD
     }
 
     public void removeGroup(Group group) {
+        jdbc.update("DELETE FROM user_group WHERE group_id=?",group.getId());
         jdbc.update("DELETE FROM groups WHERE id=?",group.getId());
     }
 
@@ -52,9 +53,17 @@ public class GroupSQLiteDAOImpl extends RestaurantAppSQLiteDao implements GroupD
         return userDAO.findByGroup(group);
     }
 
+    public List<Group> findByUser(User user) {
+        return jdbc.query("select groups.* from groups join user_group on groups.id = user_group.group_id where user_group.user_id=?", new Object[]{user.getId()}, new BeanPropertyRowMapper<Group>(Group.class));
+    }
+
     public void setGroupOwner(Group group, User owner) {
         jdbc.update("delete from user_group where user_id=? and group_id=?", owner.getId(), group.getId());
         jdbc.update("INSERT INTO user_group (user_id, group_id, option) VALUES (?,?,?)",owner.getId(),group.getId(),OWNER_OPTION);
+    }
+
+    public Integer getOwnerId(Group group) {
+        return jdbc.queryForObject("select groups.id from groups join user_group on groups.id = user_group.group_id where groups.id=? and user_group.option=? ",new Object[]{group.getId(), OWNER_OPTION},Integer.class);
     }
 
 

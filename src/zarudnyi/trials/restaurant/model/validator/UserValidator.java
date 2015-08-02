@@ -24,6 +24,9 @@ public class UserValidator extends SimpleValidator {
         }
 
         if(isEmptyOrNull(user.getLname())) {
+            errors.rejectValue("lname", "empty");
+        }
+        if(checkStringHasSpecialChar(user.getLname())) {
             errors.rejectValue("lname", "bad");
         }
         if(user.getPassword()==null || user.getPassword().isEmpty()) {

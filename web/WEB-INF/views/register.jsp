@@ -15,17 +15,16 @@
             Name<br>
             <form:input path="fname"/><br>
             <form:errors path="fname" cssStyle="color: #ff0000; font-size: small; font-family: serif"/><br>
-
         </label>
         <label>
             Last Name<br>
             <form:input path="lname"/><br>
-            <form:errors path="lname" cssStyle="color: #ff0000; font-size: small; font-family: serif"/>
-        </label><br>
+            <form:errors path="lname" cssStyle="color: #ff0000; font-size: small; font-family: serif"/><br>
+        </label>
         <label>
-            New Password<br>
+            Password<br>
             <form:password path="password"/><br>
-            <form:errors path="password" cssStyle="color: #ff0000; font-size: small; font-family: serif"/> <br>
+            <form:errors path="password" cssStyle="color: #ff0000; font-size: small; font-family: serif"/><br>
         </label>
         <button class="button" type="submit">Register</button>
     </form:form>

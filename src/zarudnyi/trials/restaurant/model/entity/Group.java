@@ -7,15 +7,8 @@ public class Group {
     private Integer id;
     private String name;
     private String description;
-    private List<User> members;
 
-    public List<User> getMembers() {
-        return members;
-    }
 
-    public void setMembers(List<User> members) {
-        this.members = members;
-    }
 
     public String getDescription() {
         return description;

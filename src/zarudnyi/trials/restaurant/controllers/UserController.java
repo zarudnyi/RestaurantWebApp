@@ -1,31 +1,29 @@
 package zarudnyi.trials.restaurant.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import zarudnyi.trials.restaurant.config.AppConfig;
-import zarudnyi.trials.restaurant.model.entity.Order;
+import zarudnyi.trials.restaurant.model.entity.Group;
 import zarudnyi.trials.restaurant.model.entity.User;
 import zarudnyi.trials.restaurant.model.validator.UserValidator;
+import zarudnyi.trials.restaurant.services.impl.GroupService;
 import zarudnyi.trials.restaurant.services.impl.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class UserController {
     @Autowired
     UserService userService;
+
+    @Autowired
+    GroupService groupService;
 
 
     @Autowired
@@ -44,28 +42,44 @@ public class UserController {
         ModelAndView model = new ModelAndView();
 
         model.setViewName("profile");
-        model.addObject("user", userService.getUserByLogin(currentUser()));
+        User curUser = userService.getUserByLogin(userService.currentUserLogin());
+        model.addObject("user", curUser);
+
+        List<Group> userGroups = groupService.getUserGroups(curUser);
+        List<Group> myGroups = new ArrayList<Group>();
+        List<Group> memberOfGroups = new ArrayList<Group>();
+
+        for (Group g : userGroups){
+            if (groupService.isOwner(curUser,g))
+                myGroups.add(g);
+            else
+                memberOfGroups.add(g);
+        }
+        model.addObject("myGroups", myGroups);
+        model.addObject("memberOfGroups", memberOfGroups);
 
 
         return model;
     }
 
     @RequestMapping(value = {"/updateUser"}, method = {RequestMethod.POST})
-    public ModelAndView updateUser(@RequestParam("fname") String fname,
-                                   @RequestParam("lname") String lname,
-                                   @RequestParam("password") String password) {
-        User curUser = userService.getUserByLogin(currentUser());
+    public ModelAndView updateUser(@ModelAttribute User user, BindingResult result) {
 
-        curUser.setFname(fname);
-        curUser.setLname(lname);
-        if (password != null && !password.isEmpty())
-            curUser.setPassword(password);
+        user.setLogin(userService.currentUserLogin());
+        if (user.getPassword().isEmpty())
+            user.setPassword(userService.currentUser().getPassword());
 
-        userService.updateUser(curUser);
+        userValidator.validate(user, result);
 
-        return new ModelAndView("redirect:/profile");
-
-
+        if (result.hasErrors()){
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("profile");
+            modelAndView.addObject("user",user);
+            return modelAndView;
+        }else {
+            userService.updateUser(user);
+            return new ModelAndView("redirect:/profile");
+        }
     }
 
     @RequestMapping(value = {"/register"}, method = {RequestMethod.GET})
@@ -85,18 +99,14 @@ public class UserController {
         if (result.hasErrors()){
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("register");
-            modelAndView.addObject("command",user);
+            modelAndView.addObject("user",user);
             return modelAndView;
+        }else {
+            userService.createUser(user);
+            return new ModelAndView("redirect:/profile");
         }
 
-
-        return new ModelAndView("redirect:/profile");
-
     }
 
-    private String currentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getName();
-    }
 
 }

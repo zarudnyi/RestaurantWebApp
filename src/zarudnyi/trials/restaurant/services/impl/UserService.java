@@ -3,8 +3,10 @@ package zarudnyi.trials.restaurant.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -55,5 +57,25 @@ public class UserService implements UserDetailsService {
 
     public User getUserByLogin(String login){
         return userDAO.findByLogin(login);
+    }
+
+    public User getUserById(Integer id){
+        return userDAO.findById(id);
+    }
+
+
+    public void createUser(User user) {
+        User created = userDAO.createUser(user.getLogin());
+        user.setId(created.getId());
+        userDAO.updateUser(user);
+    }
+
+    public User currentUser(){
+        return getUserByLogin(currentUserLogin());
+    }
+
+    public String currentUserLogin() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth.getName();
     }
 }

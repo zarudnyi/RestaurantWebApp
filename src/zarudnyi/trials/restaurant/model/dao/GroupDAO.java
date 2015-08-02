@@ -23,7 +23,11 @@ public interface GroupDAO {
 
     List<User> getMembers(Group group);
 
+    List<Group> findByUser(User user);
+
     void setGroupOwner (Group group, User owner);
+
+    Integer getOwnerId(Group group);
 
 
 }
