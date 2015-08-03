@@ -40,10 +40,33 @@ public class GroupService {
     }
 
     public void removeUserFromGroup(User user, Group group) {
-        groupDAO.removeMember(group,user);
+        groupDAO.removeUser(group, user);
     }
 
     public List<User> getMembers(Group group) {
         return groupDAO.getMembers(group);
     }
+
+    public void approveCandidate(User candidate, Group group){
+        groupDAO.removeUser(group,candidate);
+        groupDAO.addMember(group,candidate);
+    }
+
+    public void rejectCandidate(User candidate, Group group){
+        groupDAO.removeUser(group,candidate);
+        groupDAO.addUser(group, candidate, GroupDAO.CANDIDATE_REJECTED_OPTION);
+    }
+
+    public void addCandidate (User candidate, Group group){
+        groupDAO.addUser(group,candidate,GroupDAO.CANDIDATE_OPTION);
+    }
+
+    public List<User> getCandidates (Group g){
+        return groupDAO.getCandidates(g);
+    }
+
+    public void ascInviteToGroup(User candidate, Group group){
+        groupDAO.addUser(group,candidate,GroupDAO.CANDIDATE_OPTION);
+    }
+
 }

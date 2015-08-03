@@ -22,4 +22,7 @@ public interface UserDAO {
 
     List<User> findByGroup(Group group);
 
+    List<User> findByGroup(Group group, Integer option);
+
+
 }

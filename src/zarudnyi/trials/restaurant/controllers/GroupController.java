@@ -20,13 +20,12 @@ public class GroupController {
     private GroupService groupService;
 
 
-
     @RequestMapping(value = {"/removeGroup"}, method = {RequestMethod.GET})
     public ModelAndView removeGroup(@RequestParam("group_id") Integer group_id) {
         Group group = groupService.findById(group_id);
 
 
-        if (groupService.isOwner(userService.currentUser(), group)){
+        if (groupService.isOwner(userService.currentUser(), group)) {
             groupService.removeGroup(group);
         }
 
@@ -39,10 +38,10 @@ public class GroupController {
         try {
             Group group = groupService.findById(group_id);
 
-            if (groupService.isMember(userService.currentUser(), group)){
+            if (groupService.isMember(userService.currentUser(), group)) {
                 groupService.removeUserFromGroup(userService.currentUser(), group);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -57,14 +56,69 @@ public class GroupController {
         try {
             Group group = groupService.findById(group_id);
             User user = userService.getUserById(user_id);
-            if (groupService.isOwner(userService.currentUser(), group) ){
+            if (groupService.isOwner(userService.currentUser(), group)) {
                 groupService.removeUserFromGroup(user, group);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return new ModelAndView("redirect:/group?id="+group_id);
+        return new ModelAndView("redirect:/group?id=" + group_id);
+    }
+
+    @RequestMapping(value = {"/rejectUserFromGroup"}, method = {RequestMethod.GET})
+    public ModelAndView rejectUserFromGroup(@RequestParam("group_id") Integer group_id,
+                                            @RequestParam("user_id") Integer user_id) {
+
+        try {
+            Group group = groupService.findById(group_id);
+            User user = userService.getUserById(user_id);
+            User currentUser = userService.currentUser();
+            if (groupService.isOwner(currentUser, group) && groupService.getCandidates(group).contains(user)) {
+                groupService.rejectCandidate(user, group);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new ModelAndView("redirect:/group?id=" + group_id);
+    }
+
+
+    @RequestMapping(value = {"/approveUserToGroup"}, method = {RequestMethod.GET})
+    public ModelAndView approveUserToGroup(@RequestParam("group_id") Integer group_id,
+                                           @RequestParam("user_id") Integer user_id) {
+
+        try {
+            Group group = groupService.findById(group_id);
+            User user = userService.getUserById(user_id);
+            User currentUser = userService.currentUser();
+            if (groupService.isOwner(currentUser, group) && groupService.getCandidates(group).contains(user)) {
+                groupService.approveCandidate(user, group);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new ModelAndView("redirect:/group?id=" + group_id);
+    }
+
+    @RequestMapping(value = {"/inviteToGroup"}, method = {RequestMethod.GET})
+    public ModelAndView inviteToGroup(@RequestParam("group_id") Integer group_id,
+                                      @RequestParam("user_id") Integer user_id) {
+
+        try {
+            Group group = groupService.findById(group_id);
+            User user = userService.getUserById(user_id);
+            User currentUser = userService.currentUser();
+            if (!groupService.isMember(currentUser, group) && !groupService.getCandidates(group).contains(user)) {
+                groupService.ascInviteToGroup(user, group);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new ModelAndView("redirect:/group?id=" + group_id);
     }
 
     @RequestMapping(value = {"/group"}, method = {RequestMethod.GET})
@@ -74,11 +128,20 @@ public class GroupController {
 
         try {
             Group group = groupService.findById(group_id);
-            modelAndView.addObject("group",group);
-            modelAndView.addObject("isOwner",groupService.isOwner(userService.currentUser(),group)+"");
+            modelAndView.addObject("group", group);
+            Boolean isOwner;
+            if (userService.currentUserLogin()!=null)
+                isOwner = groupService.isOwner(userService.currentUser(), group);
+            else
+
+            modelAndView.addObject("isOwner", isOwner.toString());
             modelAndView.addObject("members", groupService.getMembers(group));
 
-        }catch (Exception e){
+            if (isOwner)
+                modelAndView.addObject("candidates", groupService.getCandidates(group));
+
+
+        } catch (Exception e) {
             modelAndView.setViewName("index");
 
         }

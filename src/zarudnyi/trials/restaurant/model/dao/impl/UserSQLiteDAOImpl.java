@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
+import zarudnyi.trials.restaurant.model.dao.GroupDAO;
 import zarudnyi.trials.restaurant.model.dao.RestaurantAppSQLiteDao;
 import zarudnyi.trials.restaurant.model.dao.UserDAO;
 import zarudnyi.trials.restaurant.model.entity.Group;
@@ -49,7 +50,11 @@ public class UserSQLiteDAOImpl extends RestaurantAppSQLiteDao implements UserDAO
     }
 
     public List<User> findByGroup(Group group) {
-        return jdbc.query("select users.* from users join user_group on users.id = user_group.user_id and user_group.group_id=?",
-                new Object[]{group.getId()}, new BeanPropertyRowMapper<User>(User.class) );
+        return jdbc.query("select users.* from users join user_group on users.id = user_group.user_id and user_group.group_id=? and user_group.option in (?,?)",
+                new Object[]{group.getId(), GroupDAO.MEMBER_OPTION, GroupDAO.OWNER_OPTION}, new BeanPropertyRowMapper<User>(User.class) );
     }
+
+    public List<User> findByGroup(Group group, Integer option) {
+        return jdbc.query("select users.* from users join user_group on users.id = user_group.user_id and user_group.group_id=? and user_group.option=?",
+                new Object[]{group.getId(), option}, new BeanPropertyRowMapper<User>(User.class) );    }
 }

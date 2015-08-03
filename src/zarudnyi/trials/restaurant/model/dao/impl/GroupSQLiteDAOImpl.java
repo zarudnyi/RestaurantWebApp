@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository("groupDao")
 public class GroupSQLiteDAOImpl extends RestaurantAppSQLiteDao implements GroupDAO {
-    private static final Integer OWNER_OPTION = 1;
+
     @Autowired
     private UserDAO userDAO;
 
@@ -23,47 +23,54 @@ public class GroupSQLiteDAOImpl extends RestaurantAppSQLiteDao implements GroupD
     }
 
     public Group findById(Integer id) {
-        return jdbc.queryForObject("select * from groups where id=?", new Object[]{id}, new BeanPropertyRowMapper<Group>(Group.class));
+        return jdbc.queryForObject("SELECT * FROM groups WHERE id=?", new Object[]{id}, new BeanPropertyRowMapper<Group>(Group.class));
     }
 
     public List<Group> findAll() {
-        return jdbc.query("select * from groups", new Object[]{}, new BeanPropertyRowMapper<Group>(Group.class));
+        return jdbc.query("SELECT * FROM groups", new Object[]{}, new BeanPropertyRowMapper<Group>(Group.class));
     }
 
     public void removeGroup(Group group) {
-        jdbc.update("DELETE FROM user_group WHERE group_id=?",group.getId());
-        jdbc.update("DELETE FROM groups WHERE id=?",group.getId());
+        jdbc.update("DELETE FROM user_group WHERE group_id=?", group.getId());
+        jdbc.update("DELETE FROM groups WHERE id=?", group.getId());
     }
 
     public void updateGroup(Group group) {
-        jdbc.update("INSERT or replace into groups (id, name, description) VALUES (?,?,?)",group.getId(),group.getName(),group.getDescription());
+        jdbc.update("INSERT OR REPLACE INTO groups (id, name, description) VALUES (?,?,?)", group.getId(), group.getName(), group.getDescription());
 
     }
 
     public void addMember(Group group, User member) {
-        if (jdbc.queryForObject("select count (1) from user_group where user_id=? and group_id=?",new Object[]{member.getId(),group.getId()},Integer.class ) .compareTo(0)==0)
-            jdbc.update("INSERT INTO user_group (user_id, group_id, option) VALUES (?,?,NULL)",member.getId(),group.getId());
+        jdbc.update("INSERT INTO user_group (user_id, group_id, option) VALUES (?,?,?)", member.getId(), group.getId(),MEMBER_OPTION);
     }
 
-    public void removeMember(Group group, User member) {
-        jdbc.update("DELETE from user_group WHERE group_id=? and user_id=?",group.getId(),member.getId());
+    public void addUser(Group group, User member, Integer option) {
+        jdbc.update("INSERT INTO user_group (user_id, group_id, option) VALUES (?,?,?)", member.getId(), group.getId(),option);
+    }
+
+    public void removeUser(Group group, User member) {
+        jdbc.update("DELETE FROM user_group WHERE group_id=? AND user_id=?", group.getId(), member.getId());
     }
 
     public List<User> getMembers(Group group) {
         return userDAO.findByGroup(group);
     }
 
+    public List<User> getCandidates(Group group) {
+        return userDAO.findByGroup(group, CANDIDATE_OPTION);
+    }
+
     public List<Group> findByUser(User user) {
-        return jdbc.query("select groups.* from groups join user_group on groups.id = user_group.group_id where user_group.user_id=?", new Object[]{user.getId()}, new BeanPropertyRowMapper<Group>(Group.class));
+        return jdbc.query("SELECT groups.* FROM groups JOIN user_group ON groups.id = user_group.group_id WHERE user_group.user_id=? and user_group.option in (?,?)", new Object[]{user.getId(), MEMBER_OPTION,OWNER_OPTION}, new BeanPropertyRowMapper<Group>(Group.class));
     }
 
     public void setGroupOwner(Group group, User owner) {
-        jdbc.update("delete from user_group where user_id=? and group_id=?", owner.getId(), group.getId());
-        jdbc.update("INSERT INTO user_group (user_id, group_id, option) VALUES (?,?,?)",owner.getId(),group.getId(),OWNER_OPTION);
+        jdbc.update("DELETE FROM user_group WHERE user_id=? AND group_id=?", owner.getId(), group.getId());
+        jdbc.update("INSERT INTO user_group (user_id, group_id, option) VALUES (?,?,?)", owner.getId(), group.getId(), OWNER_OPTION);
     }
 
     public Integer getOwnerId(Group group) {
-        return jdbc.queryForObject("select groups.id from groups join user_group on groups.id = user_group.group_id where groups.id=? and user_group.option=? ",new Object[]{group.getId(), OWNER_OPTION},Integer.class);
+        return jdbc.queryForObject("SELECT groups.id FROM groups JOIN user_group ON groups.id = user_group.group_id WHERE groups.id=? AND user_group.option=? ", new Object[]{group.getId(), OWNER_OPTION}, Integer.class);
     }
 
 

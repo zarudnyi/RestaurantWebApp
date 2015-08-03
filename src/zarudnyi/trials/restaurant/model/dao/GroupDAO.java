@@ -7,6 +7,12 @@ import zarudnyi.trials.restaurant.model.entity.User;
 import java.util.List;
 
 public interface GroupDAO {
+    Integer MEMBER_OPTION = 0;
+    Integer OWNER_OPTION = 1;
+    Integer CANDIDATE_OPTION = 2;
+    Integer CANDIDATE_REJECTED_OPTION = 3;
+
+
     Group createGroup (User owner);
 
     Group findById (Integer id);
@@ -19,9 +25,14 @@ public interface GroupDAO {
 
     void addMember (Group group, User member);
 
-    void removeMember (Group group, User member);
+    void addUser(Group group, User user, Integer option);
+
+    void removeUser(Group group, User member);
 
     List<User> getMembers(Group group);
+
+    List<User> getCandidates (Group group);
+
 
     List<Group> findByUser(User user);
 
