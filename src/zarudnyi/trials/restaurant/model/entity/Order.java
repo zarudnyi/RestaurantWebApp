@@ -4,14 +4,15 @@ package zarudnyi.trials.restaurant.model.entity;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import static zarudnyi.trials.restaurant.model.dao.OrderDAO.*;
+
 
 public class Order {
-    private static Map<Integer,String> statusMap = new HashMap<Integer, String>();
-    public static final Integer STATUS_RECEIVED = 1;
-    public static final Integer STATUS_IN_PROGRESS = 2;
-    public static final Integer STATUS_COMPLETED = 3;
+    private static final Map<Integer,String> statusMap = new HashMap<Integer, String>();
+
 
     static {
+        statusMap.put(STATUS_RECEIVED,"Received");
         statusMap.put(STATUS_RECEIVED,"Received");
         statusMap.put(STATUS_IN_PROGRESS,"In Progress");
         statusMap.put(STATUS_COMPLETED,"Completed");

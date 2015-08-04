@@ -2,11 +2,10 @@ package zarudnyi.trials.restaurant.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import zarudnyi.trials.restaurant.config.AppConfig;
 import zarudnyi.trials.restaurant.model.dao.OrderDAO;
 import zarudnyi.trials.restaurant.model.dao.OrderItemDAO;
-import zarudnyi.trials.restaurant.model.entity.Order;
-import zarudnyi.trials.restaurant.model.entity.OrderItem;
-import zarudnyi.trials.restaurant.model.entity.User;
+import zarudnyi.trials.restaurant.model.entity.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +18,55 @@ public class OrderService {
     @Autowired
     private OrderItemDAO orderItemDAO;
 
-    public List<OrderItem> getUserActiveOrderItems(User user){
-        List<Order> activeOrders = orderDAO.findByUserId(user.getId(), Order.STATUS_RECEIVED);
 
-        for (Order order:activeOrders){
-            if (!order.isGroupOrder())
-                return orderItemDAO.findByOrder(order);
-        }
 
-        return new ArrayList<OrderItem>();
+    public Order placeOrder(User user){
+        return orderDAO.createOrder(user);
     }
 
+    public Order placeGroupOrder(User owner,Group group){
+        return orderDAO.createGroupOrder(owner, group);
+    }
+
+    public void removeOrder(Order order){
+        orderDAO.removeOrder(order);
+    }
+
+    public List<Order> getUserOrders(User user){
+        return orderDAO.findByUserId(user.getId());
+    }
+
+    public void addOrderItem(Order order,MenuItem menuItem){
+        orderItemDAO.createOrderItem(order,menuItem);
+    }
+
+    public void removeItemsByType(Order currentOrder, MenuItem type) {
+        List<OrderItem> orderItems = orderItemDAO.findByOrder(currentOrder);
+        for (OrderItem orderItem:orderItems){
+            if (orderItem.getMenuItemId().equals(type.getId()))
+                orderItemDAO.removeOrderItem(orderItem);
+        }
+
+    }
+
+    public Order findById (Integer id){
+        return orderDAO.findById(id);
+    }
+
+    public List<OrderItem> getOrderItems(Order order) {
+        return orderItemDAO.findByOrder(order);
+    }
+
+    public List<Order> getUserInitiatedGroupOrders(User user) {
+        List<Order> orders = orderDAO.findByUserId(user.getId() , OrderDAO.STATUS_INITIATED);
+        List<Order> res = new ArrayList<Order>();
+
+        for (Order o : orders){
+            if (o.getGroupId()!=null)
+                res.add(o);
+        }
+
+        return res;
+
+    }
 }

@@ -21,5 +21,5 @@ public interface OrderItemDAO {
 
     void removeOrderItem(OrderItem orderItem);
 
-
+    void removeOrderItemsByOrder(Order order);
 }

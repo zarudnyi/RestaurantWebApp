@@ -14,6 +14,10 @@
 
     <script type="text/javascript" src=" https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.js"></script>
     <script type="text/javascript" src="resources/scripts/jquery.pikachoose.js"></script>
+    <script type="text/javascript" src="resources/scripts/jquery.cookie.js"></script>
+
+    <script type="text/javascript" src="resources/scripts/restaurant.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function () {
             $("#pikame").PikaChoose();
@@ -31,11 +35,18 @@
             if (window.location.pathname == "/gallery") {
                 $("a[href='gallery']").addClass("current");
             }
-            if (window.location.pathname == "/profile" || window.location.pathname == "/login" || window.location.pathname == "/updateUser" ) {
+            if (window.location.pathname == "/profile" || window.location.pathname == "/login" || window.location.pathname == "/updateUser") {
                 $("a[href='profile']").addClass("current");
             }
-
-
+            if (window.location.pathname == "/group" || window.location.pathname == "/groups") {
+                $("a[href='groups']").addClass("current");
+            }
+            if (window.location.pathname == "/contact" ) {
+                $("a[href='contact']").addClass("current");
+            }
+            if (window.location.pathname == "/admin" ) {
+                $("a[href='admin']").addClass("current");
+            }
 
         })
         ;
@@ -51,7 +62,7 @@
                 <li><a href="menu">Menu</a></li>
                 <li><a href="gallery">Gallery</a></li>
                 <li><a href="profile">
-                    <sec:authorize access="isAuthenticated()" var="authenticated" />
+                    <sec:authorize access="isAuthenticated()" var="authenticated"/>
                     <c:choose>
                         <c:when test="${authenticated}">
                             Profile
@@ -61,7 +72,23 @@
                         </c:otherwise>
                     </c:choose>
                 </a></li>
-                <li><a href="contact.html">Contact</a></li>
+
+                <sec:authorize access="isAuthenticated()" var="authenticated"/>
+                <c:choose>
+                    <c:when test="${authenticated}">
+                        <li><a href="groups">Groups</a></li>
+                    </c:when>
+                </c:choose>
+                <sec:authorize access="hasRole('ROLE_ADMIN')" var="isAdmin" />
+                <c:choose>
+                    <c:when test="${isAdmin}">
+                        <li><a href="admin">Administration</a></li>
+                    </c:when>
+                    <c:otherwise>
+                        <li><a href="contact">Contact</a></li>
+                    </c:otherwise>
+                </c:choose>
+
             </ul>
         </nav>
         <hgroup class="intro">

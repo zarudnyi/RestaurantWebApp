@@ -1,10 +1,8 @@
 package zarudnyi.trials.restaurant.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,12 +10,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.sqlite.SQLiteDataSource;
 import zarudnyi.trials.restaurant.model.entity.MenuCategory;
+import zarudnyi.trials.restaurant.model.entity.Order;
+import zarudnyi.trials.restaurant.model.entity.User;
 import zarudnyi.trials.restaurant.model.validator.UserValidator;
 import zarudnyi.trials.restaurant.services.impl.GroupService;
 import zarudnyi.trials.restaurant.services.impl.MenuService;
 import zarudnyi.trials.restaurant.services.impl.OrderService;
 import zarudnyi.trials.restaurant.services.impl.UserService;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.jws.soap.SOAPBinding;
 import javax.sql.DataSource;
 
 
@@ -177,4 +180,48 @@ public class AppConfig {
         return messageSource;
     }
 
+    @Bean
+    @Scope("session")
+    CurrentOrderHolder orderHolder(){
+        return new CurrentOrderHolder();
+    }
+
+
+    public static class CurrentOrderHolder{
+
+        @Autowired
+        private UserService userService;
+
+        @Autowired
+        private OrderService orderService;
+
+        private Order userOrder;
+
+        private Order currentOrder;
+
+        public Order getCurrentOrder() {
+            return currentOrder;
+        }
+        public void setCurrentOrder(Order currentOrder) {
+            this.currentOrder = currentOrder;
+        }
+
+        public Order getUserOrder() {
+            return userOrder;
+        }
+
+
+        @PostConstruct
+        public void init() throws Exception {
+            userOrder = orderService.placeOrder(userService.currentUser());
+            currentOrder = userOrder;
+        }
+
+        @PreDestroy
+        public void removeUserOrder(){
+            orderService.removeOrder(userOrder);
+        }
+
+
+    }
 }

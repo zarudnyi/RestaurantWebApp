@@ -58,4 +58,7 @@ public class MenuService {
         return menuDAO.findAllItems();
     }
 
+    public MenuItem getItemById(Integer itemId) {
+        return menuDAO.findItemById(itemId);
+    }
 }

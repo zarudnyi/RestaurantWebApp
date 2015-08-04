@@ -8,6 +8,10 @@ import zarudnyi.trials.restaurant.model.entity.User;
 import java.util.List;
 
 public interface OrderDAO {
+    Integer STATUS_INITIATED = 0;
+    Integer STATUS_RECEIVED = 1;
+    Integer STATUS_IN_PROGRESS = 2;
+    Integer STATUS_COMPLETED = 3;
 
     Order createGroupOrder(User user, Group group);
 

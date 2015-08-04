@@ -1,6 +1,7 @@
 package zarudnyi.trials.restaurant.services.impl;
 
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import zarudnyi.trials.restaurant.model.dao.GroupDAO;
@@ -34,7 +35,7 @@ public class GroupService {
         groupDAO.removeGroup(g);
     }
 
-    public boolean isMember(User user, Group group) {
+    public Boolean isMember(User user, Group group) {
         List<User> members = groupDAO.getMembers(group);
         return members.contains(user);
     }
@@ -69,4 +70,12 @@ public class GroupService {
         groupDAO.addUser(group,candidate,GroupDAO.CANDIDATE_OPTION);
     }
 
+    public User getOwner(Group g){
+        return userDAO.findById(groupDAO.getOwnerId(g));
+    }
+
+
+    public List<Group> allGroups() {
+        return groupDAO.findAll();
+    }
 }

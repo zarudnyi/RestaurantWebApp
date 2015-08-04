@@ -49,7 +49,10 @@ public class GroupSQLiteDAOImpl extends RestaurantAppSQLiteDao implements GroupD
     }
 
     public void removeUser(Group group, User member) {
-        jdbc.update("DELETE FROM user_group WHERE group_id=? AND user_id=?", group.getId(), member.getId());
+        if (getOwnerId(group).equals(member.getId()))
+            removeGroup(group);
+        else
+            jdbc.update("DELETE FROM user_group WHERE group_id=? AND user_id=?", group.getId(), member.getId());
     }
 
     public List<User> getMembers(Group group) {

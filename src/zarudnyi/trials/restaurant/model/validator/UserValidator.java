@@ -13,7 +13,7 @@ public class UserValidator extends SimpleValidator {
     public void validate(Object target, Errors errors) {
         User user = (User) target;
 
-        if(!checkString(user.getLogin())) {
+        if(!checkString(user.getLogin()) || "anonymousUser".equals(user.getLogin())) {
             errors.rejectValue("login", "bad");
         }
         if(isEmptyOrNull(user.getLogin())) {

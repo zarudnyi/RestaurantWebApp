@@ -26,12 +26,12 @@ import java.util.*;
 public class MainController {
 
     @Autowired
-    MenuService menuService;
+    private MenuService menuService;
 
 
 
     @RequestMapping(value = {"/"}, method = {RequestMethod.GET})
-    ModelAndView indexPage(){
+    public ModelAndView indexPage(){
         ModelAndView model = new ModelAndView();
 
         model.setViewName("index");
@@ -48,7 +48,7 @@ public class MainController {
     }
 
     @RequestMapping(value = {"/menu"}, method = {RequestMethod.GET})
-    ModelAndView menuPage(){
+    public ModelAndView menuPage(){
         ModelAndView model = new ModelAndView();
 
         model.setViewName("menu");
@@ -70,12 +70,19 @@ public class MainController {
     }
 
     @RequestMapping(value = {"/gallery"}, method = {RequestMethod.GET})
-    ModelAndView galleryPage(){
+    public ModelAndView galleryPage(){
         ModelAndView model = new ModelAndView();
 
         model.setViewName("gallery");
         model.addObject("gallery", menuService.getGallery(40));
 
+        return model;
+    }
+
+    @RequestMapping(value = {"/contact"}, method = {RequestMethod.GET})
+    public ModelAndView contactPage(){
+        ModelAndView model = new ModelAndView();
+        model.setViewName("contact");
         return model;
     }
 

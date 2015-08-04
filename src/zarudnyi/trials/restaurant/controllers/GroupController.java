@@ -11,6 +11,10 @@ import zarudnyi.trials.restaurant.model.entity.User;
 import zarudnyi.trials.restaurant.services.impl.GroupService;
 import zarudnyi.trials.restaurant.services.impl.UserService;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Controller
 public class GroupController {
     @Autowired
@@ -129,22 +133,49 @@ public class GroupController {
         try {
             Group group = groupService.findById(group_id);
             modelAndView.addObject("group", group);
-            Boolean isOwner;
-            if (userService.currentUserLogin()!=null)
-                isOwner = groupService.isOwner(userService.currentUser(), group);
-            else
+            Boolean isOwner = false;
+            if (!userService.currentUserLogin().equals("anonymousUser")){
+                User currentUser = userService.currentUser();
+                isOwner = groupService.isOwner(currentUser, group);
 
-            modelAndView.addObject("isOwner", isOwner.toString());
+                modelAndView.addObject("isPendingApprove", groupService.getCandidates(group).contains(currentUser));
+                modelAndView.addObject("isMember", groupService.isMember(currentUser,group));
+                modelAndView.addObject("isOwner", isOwner);
+                modelAndView.addObject("currUser",currentUser);
+            }
+
+
             modelAndView.addObject("members", groupService.getMembers(group));
 
             if (isOwner)
                 modelAndView.addObject("candidates", groupService.getCandidates(group));
-
+            else
+                modelAndView.addObject("owner", groupService.getOwner(group));
 
         } catch (Exception e) {
-            modelAndView.setViewName("index");
+            e.printStackTrace();
+            modelAndView.setViewName("redirect:/");
 
         }
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = {"/groups"}, method = {RequestMethod.GET})
+    public ModelAndView groupsPage() {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("all_groups");
+
+        Map<Group, User> owners = new HashMap<Group, User>();
+        List<Group> groups = groupService.allGroups();
+
+        for (Group group:groups){
+            owners.put(group, groupService.getOwner(group));
+        }
+
+        modelAndView.addObject("groups",groups);
+        modelAndView.addObject("owners",owners);
 
         return modelAndView;
     }

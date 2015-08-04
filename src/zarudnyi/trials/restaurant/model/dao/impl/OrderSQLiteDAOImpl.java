@@ -1,9 +1,11 @@
 package zarudnyi.trials.restaurant.model.dao.impl;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
 import zarudnyi.trials.restaurant.model.dao.OrderDAO;
+import zarudnyi.trials.restaurant.model.dao.OrderItemDAO;
 import zarudnyi.trials.restaurant.model.dao.RestaurantAppSQLiteDao;
 import zarudnyi.trials.restaurant.model.entity.Group;
 import zarudnyi.trials.restaurant.model.entity.Order;
@@ -14,6 +16,8 @@ import java.util.List;
 @Repository("orderDao")
 public class OrderSQLiteDAOImpl extends RestaurantAppSQLiteDao implements OrderDAO {
 
+    @Autowired
+    OrderItemDAO orderItemDAO;
 
     public Order createGroupOrder(User user, Group group) {
 
@@ -27,6 +31,7 @@ public class OrderSQLiteDAOImpl extends RestaurantAppSQLiteDao implements OrderD
     }
 
     public void removeOrder(Order order) {
+        orderItemDAO.removeOrderItemsByOrder(order);
         jdbc.update("DELETE FROM orders WHERE id=?", order.getId());
     }
 

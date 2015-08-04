@@ -13,7 +13,7 @@ import java.util.List;
 @Repository("orderItemDao")
 public class OrderItemSQLiteDAOImpl extends RestaurantAppSQLiteDao implements OrderItemDAO {
     public OrderItem createOrderItem(Order order, MenuItem menuItem) {
-        Integer id = genericInsert("INSERT INTO order_items (order_id, menu_id, description) VALUES (NULL ,NULL ,NULL ) ");
+        Integer id = genericInsert("INSERT INTO order_items (order_id, menu_item_id, description) VALUES (NULL ,NULL ,NULL ) ");
         return findById(id);
     }
 
@@ -26,7 +26,7 @@ public class OrderItemSQLiteDAOImpl extends RestaurantAppSQLiteDao implements Or
     }
 
     public OrderItem findById(Integer id) {
-        return jdbc.queryForObject("select * from order_items where order_id=?",new Object[]{id},new BeanPropertyRowMapper<OrderItem>(OrderItem.class));
+        return jdbc.queryForObject("select * from order_items where id=?",new Object[]{id},new BeanPropertyRowMapper<OrderItem>(OrderItem.class));
     }
 
     public void updateOrderItem(OrderItem orderItem) {
@@ -35,5 +35,9 @@ public class OrderItemSQLiteDAOImpl extends RestaurantAppSQLiteDao implements Or
 
     public void removeOrderItem(OrderItem orderItem) {
         jdbc.update("DELETE FROM order_items WHERE id=?",orderItem.getId());
+    }
+
+    public void removeOrderItemsByOrder(Order order) {
+        jdbc.update("DELETE FROM order_items WHERE order_id=?",order.getId());
     }
 }
