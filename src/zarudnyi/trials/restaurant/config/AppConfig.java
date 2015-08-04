@@ -128,6 +128,7 @@ public class AppConfig {
         jdbc.execute("CREATE TABLE IF NOT EXISTS order_items " +
                 "(id INTEGER PRIMARY KEY," +
                 "order_id INTEGER," +
+                "user_id INTEGER," +
                 "menu_item_id INTEGER," +
                 "description TEXT," +
                 "FOREIGN KEY (order_id) REFERENCES orders(id)," +
@@ -162,6 +163,7 @@ public class AppConfig {
     public OrderService orderService() {
         return new OrderService();
     }
+
     @Bean
     public GroupService groupService() {
         return new GroupService();
@@ -180,48 +182,4 @@ public class AppConfig {
         return messageSource;
     }
 
-    @Bean
-    @Scope("session")
-    CurrentOrderHolder orderHolder(){
-        return new CurrentOrderHolder();
-    }
-
-
-    public static class CurrentOrderHolder{
-
-        @Autowired
-        private UserService userService;
-
-        @Autowired
-        private OrderService orderService;
-
-        private Order userOrder;
-
-        private Order currentOrder;
-
-        public Order getCurrentOrder() {
-            return currentOrder;
-        }
-        public void setCurrentOrder(Order currentOrder) {
-            this.currentOrder = currentOrder;
-        }
-
-        public Order getUserOrder() {
-            return userOrder;
-        }
-
-
-        @PostConstruct
-        public void init() throws Exception {
-            userOrder = orderService.placeOrder(userService.currentUser());
-            currentOrder = userOrder;
-        }
-
-        @PreDestroy
-        public void removeUserOrder(){
-            orderService.removeOrder(userOrder);
-        }
-
-
-    }
 }

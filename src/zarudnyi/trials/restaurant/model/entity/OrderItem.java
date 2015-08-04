@@ -6,6 +6,7 @@ public class OrderItem {
     private Integer orderId;
     private Integer menuItemId;
     private String description;
+    private Integer userId;
 
      public Integer getId() {
         return id;
@@ -13,6 +14,14 @@ public class OrderItem {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public Integer getOrderId() {
@@ -46,31 +55,33 @@ public class OrderItem {
                 ", orderId=" + orderId +
                 ", menuItemId=" + menuItemId +
                 ", description='" + description + '\'' +
+                ", userId=" + userId +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OrderItem)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         OrderItem orderItem = (OrderItem) o;
 
-        if (getId() != null ? !getId().equals(orderItem.getId()) : orderItem.getId() != null) return false;
-        if (getOrderId() != null ? !getOrderId().equals(orderItem.getOrderId()) : orderItem.getOrderId() != null)
+        if (id != null ? !id.equals(orderItem.id) : orderItem.id != null) return false;
+        if (orderId != null ? !orderId.equals(orderItem.orderId) : orderItem.orderId != null) return false;
+        if (menuItemId != null ? !menuItemId.equals(orderItem.menuItemId) : orderItem.menuItemId != null) return false;
+        if (description != null ? !description.equals(orderItem.description) : orderItem.description != null)
             return false;
-        if (getMenuItemId() != null ? !getMenuItemId().equals(orderItem.getMenuItemId()) : orderItem.getMenuItemId() != null)
-            return false;
-        return !(getDescription() != null ? !getDescription().equals(orderItem.getDescription()) : orderItem.getDescription() != null);
+        return !(userId != null ? !userId.equals(orderItem.userId) : orderItem.userId != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getOrderId() != null ? getOrderId().hashCode() : 0);
-        result = 31 * result + (getMenuItemId() != null ? getMenuItemId().hashCode() : 0);
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (orderId != null ? orderId.hashCode() : 0);
+        result = 31 * result + (menuItemId != null ? menuItemId.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (userId != null ? userId.hashCode() : 0);
         return result;
     }
 }

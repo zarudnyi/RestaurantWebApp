@@ -3,26 +3,30 @@ package zarudnyi.trials.restaurant.controllers;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import zarudnyi.trials.restaurant.config.AppConfig;
-import zarudnyi.trials.restaurant.config.ApplicationContextProvider;
-import zarudnyi.trials.restaurant.model.entity.Group;
-import zarudnyi.trials.restaurant.model.entity.Order;
-import zarudnyi.trials.restaurant.model.entity.OrderItem;
-import zarudnyi.trials.restaurant.model.entity.User;
+import zarudnyi.trials.restaurant.config.WebConfig;
+import zarudnyi.trials.restaurant.model.entity.*;
 import zarudnyi.trials.restaurant.services.impl.GroupService;
 import zarudnyi.trials.restaurant.services.impl.MenuService;
 import zarudnyi.trials.restaurant.services.impl.OrderService;
 import zarudnyi.trials.restaurant.services.impl.UserService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/order/**")
+@Scope("request")
 public class OrderController {
+    @Autowired
+    private WebConfig.CurrentOrderHolder orderHolder;
+
     @Autowired
     private OrderService orderService;
 
@@ -33,12 +37,69 @@ public class OrderController {
     private MenuService menuService;
 
 
-    private AppConfig.CurrentOrderHolder orderHolder(){
-        return ApplicationContextProvider.getBean("orderHolder",AppConfig.CurrentOrderHolder.class );
-    }
-
     @Autowired
     private UserService userService;
+
+    @RequestMapping(value = {"/item"}, method = {RequestMethod.GET})
+    public String orderItems(@RequestParam(value = "order_id") Integer orderId) {
+        if (orderId == null)
+            orderId = orderHolder.getCurrentOrder().getId();
+        Order order = orderService.findById(orderId);
+
+        JSONArray response = new JSONArray();
+
+        List<OrderItem> items = orderService.getOrderItems(order);
+
+        Map<User,List<OrderItemResponse>> data = new HashMap<User, List<OrderItemResponse>>();
+
+        for (OrderItem orderItem : items) {
+            User user = userService.getUserById(orderItem.getUserId());
+            if (!data.containsKey(user))
+                data.put(user,new ArrayList<OrderItemResponse>());
+
+            OrderItemResponse orderItemResponse = new OrderItemResponse();
+
+            MenuItem menuItem = menuService.getItemById(orderItem.getMenuItemId());
+
+            orderItemResponse.menuItemId=menuItem.getId();
+            orderItemResponse.name = menuItem.getName();
+            orderItemResponse.price = menuItem.getPrice();
+            orderItemResponse.increaseQty();
+
+            List<OrderItemResponse> list = data.get(user);
+
+            if (list.contains(orderItemResponse)){
+                list.get(list.indexOf(orderItemResponse)).increaseQty();
+            }else {
+                list.add(orderItemResponse);
+            }
+        }
+
+        for (User user : data.keySet()) {
+            JSONObject userJson = new JSONObject();
+            userJson.put("login", user.getLogin());
+            userJson.put("fname", user.getFname());
+            userJson.put("lname", user.getLname());
+            userJson.put("id", user.getId());
+
+            JSONArray itemsJson = new JSONArray();
+
+            for (OrderItemResponse orderItem: data.get(user)){
+                JSONObject itemJson = new JSONObject();
+
+                itemJson.put("itemId", orderItem.menuItemId);
+                itemJson.put("itemName", orderItem.name);
+                itemJson.put("price", orderItem.price);
+                itemJson.put("qty", orderItem.qty);
+
+                itemsJson.put(itemJson);
+            }
+            userJson.put("items", itemsJson);
+            response.put(userJson);
+        }
+
+        return response.toString();
+    }
 
 
     @RequestMapping(value = {"/item"}, method = {RequestMethod.POST})
@@ -46,8 +107,9 @@ public class OrderController {
         JSONObject response = new JSONObject();
 
         try {
-            Order currentOrder = orderHolder().getCurrentOrder();
-            orderService.addOrderItem(currentOrder, menuService.getItemById(itemId));
+            Order currentOrder = orderHolder.getCurrentOrder();
+
+            orderService.addOrderItem(currentOrder, userService.currentUser(), menuService.getItemById(itemId));
             response.put("result", true);
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,18 +120,15 @@ public class OrderController {
     }
 
     @RequestMapping(value = {"/item"}, method = {RequestMethod.DELETE})
-    public String deleteItem(@RequestParam("item_id") Integer itemId) {
+    public String deleteItem(@RequestParam("item_id") Integer itemId, @RequestParam("order_id") Integer orderId) {
         JSONObject response = new JSONObject();
-
         try {
-            Order currentOrder = orderHolder().getCurrentOrder();
-            orderService.removeItemsByType(currentOrder, menuService.getItemById(itemId));
+            orderService.removeItemsByType(orderService.findById(orderId), userService.currentUser(), menuService.getItemById(itemId));
             response.put("result", true);
         } catch (Exception e) {
             e.printStackTrace();
             response.put("result", false);
         }
-
         return response.toString();
     }
 
@@ -78,7 +137,7 @@ public class OrderController {
         JSONArray response = new JSONArray();
         Order order = orderService.findById(orderId);
 
-        if (order.getGroupId()!=null){
+        if (order.getGroupId() != null) {
             Group group = groupService.findById(order.getGroupId());
             User owner = groupService.getOwner(group);
             if (owner.getId().equals(userService.currentUser().getId()))
@@ -87,29 +146,67 @@ public class OrderController {
 
         return response.toString();
     }
+    @RequestMapping(value = {"/"}, method = {RequestMethod.POST})
+    public String setCurrent(@RequestParam("order_id") Integer orderId) {
+        orderHolder.setCurrentOrder(orderService.findById(orderId));
+        return "";
+    }
 
     @RequestMapping(value = {"/"}, method = {RequestMethod.GET})
     public String currentOrders() {
         JSONArray response = new JSONArray();
-        List<Order> userInitiatedGroupOrders = orderService.getUserInitiatedGroupOrders(userService.currentUser());
+        User currentUser = userService.currentUser();
+        List<Order> userInitiatedGroupOrders = orderService.getUserInitiatedGroupOrders(currentUser);
+        JSONObject orderJson = new JSONObject();
+        orderJson.put("id", orderHolder.getUserOrder().getId());
+        orderJson.put("name", "My Order");
+        orderJson.put("isOwner", true);
+        orderJson.put("isCurrent", orderHolder.getCurrentOrder().equals(orderHolder.getUserOrder()));
+        orderJson.put("isGroup", false);
+        response.put(orderJson);
 
         for (Order order : userInitiatedGroupOrders) {
-            JSONObject orderJson = new JSONObject();
+            orderJson = new JSONObject();
             orderJson.put("id", order.getId());
-            orderJson.put("groupName", groupService.findById(order.getGroupId()).getName());
+            Group group = groupService.findById(order.getGroupId());
+            orderJson.put("name", group.getName() + " Order");
+            orderJson.put("isOwner", groupService.getOwner(group).getId().equals(currentUser.getId()));
+            orderJson.put("isCurrent", orderHolder.getCurrentOrder().equals(order));
+            orderJson.put("isGroup", true);
+
+
             response.put(orderJson);
         }
+
 
         return response.toString();
     }
 
-    @RequestMapping(value = {"/item"}, method = {RequestMethod.GET})
-    public List<OrderItem> orderItems(@RequestParam(value = "order_id", required = false) Integer orderId) {
-        if (orderId == null)
-            orderId = orderHolder().getCurrentOrder().getId();
-        Order order = orderService.findById(orderId);
+    private static class OrderItemResponse{
+        Integer qty=0;
+        Integer menuItemId;
+        String name;
+        Integer price;
 
-        return orderService.getOrderItems(order);
+        public void increaseQty(){
+            qty+=1;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            OrderItemResponse that = (OrderItemResponse) o;
+
+            return !(menuItemId != null ? !menuItemId.equals(that.menuItemId) : that.menuItemId != null);
+
+        }
+
+        @Override
+        public int hashCode() {
+            return menuItemId != null ? menuItemId.hashCode() : 0;
+        }
     }
 
 

@@ -37,7 +37,7 @@ public class OrderSQLiteDAOImpl extends RestaurantAppSQLiteDao implements OrderD
 
     public void updateOrder(Order order) {
         jdbc.update("INSERT OR REPLACE INTO orders (id, user_id, group_id, description, checkout_sum, status_id, order_date)" +
-                "VALUES (?,?,?,?,?,?,?)", order.getId(), order.getGroupId(), order.getDescription(), order.getCheckOutSum(), order.getStatusId(),order.getOrderDate());
+                "VALUES (?,?,?,?,?,?,?)", order.getId(),order.getUserId(), order.getGroupId(), order.getDescription(), order.getCheckOutSum(), order.getStatusId(),order.getOrderDate());
     }
 
     public Order findById(Integer orderId) {

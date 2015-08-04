@@ -6,9 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import zarudnyi.trials.restaurant.model.dao.OrderDAO;
 import zarudnyi.trials.restaurant.model.entity.Group;
+import zarudnyi.trials.restaurant.model.entity.Order;
 import zarudnyi.trials.restaurant.model.entity.User;
 import zarudnyi.trials.restaurant.services.impl.GroupService;
+import zarudnyi.trials.restaurant.services.impl.OrderService;
 import zarudnyi.trials.restaurant.services.impl.UserService;
 
 import java.util.HashMap;
@@ -23,6 +26,8 @@ public class GroupController {
     @Autowired
     private GroupService groupService;
 
+    @Autowired
+    private OrderService orderService;
 
     @RequestMapping(value = {"/removeGroup"}, method = {RequestMethod.GET})
     public ModelAndView removeGroup(@RequestParam("group_id") Integer group_id) {
@@ -116,7 +121,7 @@ public class GroupController {
             User user = userService.getUserById(user_id);
             User currentUser = userService.currentUser();
             if (!groupService.isMember(currentUser, group) && !groupService.getCandidates(group).contains(user)) {
-                groupService.ascInviteToGroup(user, group);
+                groupService.addCandidate(user, group);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -134,14 +139,22 @@ public class GroupController {
             Group group = groupService.findById(group_id);
             modelAndView.addObject("group", group);
             Boolean isOwner = false;
-            if (!userService.currentUserLogin().equals("anonymousUser")){
+            if (!userService.currentUserLogin().equals("anonymousUser")) {
                 User currentUser = userService.currentUser();
                 isOwner = groupService.isOwner(currentUser, group);
 
                 modelAndView.addObject("isPendingApprove", groupService.getCandidates(group).contains(currentUser));
-                modelAndView.addObject("isMember", groupService.isMember(currentUser,group));
+                modelAndView.addObject("isMember", groupService.isMember(currentUser, group));
                 modelAndView.addObject("isOwner", isOwner);
-                modelAndView.addObject("currUser",currentUser);
+                List<Order> groupOrders = orderService.getUserInitiatedGroupOrders(currentUser);
+                boolean groupOrderExists = false;
+                for (Order order:groupOrders){
+                    if (group.getId().equals(order.getGroupId()))
+                        groupOrderExists = true;
+                }
+
+                modelAndView.addObject("groupOrderExists",groupOrderExists);
+                modelAndView.addObject("currUser", currentUser);
             }
 
 
@@ -170,13 +183,31 @@ public class GroupController {
         Map<Group, User> owners = new HashMap<Group, User>();
         List<Group> groups = groupService.allGroups();
 
-        for (Group group:groups){
+        for (Group group : groups) {
             owners.put(group, groupService.getOwner(group));
         }
 
-        modelAndView.addObject("groups",groups);
-        modelAndView.addObject("owners",owners);
+        modelAndView.addObject("groups", groups);
+        modelAndView.addObject("owners", owners);
 
         return modelAndView;
     }
+
+    @RequestMapping(value = {"/groupOrder"}, method = {RequestMethod.GET})
+    public String createGroupOrder(@RequestParam("group_id") Integer group_id) {
+
+        try {
+            User currentUser = userService.currentUser();
+            Group group = groupService.findById(group_id);
+            groupService.isOwner(currentUser,group);
+            orderService.placeGroupOrder(currentUser, group);
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return "redirect:/group?id="+group_id;
+    }
+
 }

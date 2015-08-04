@@ -25,7 +25,10 @@ public class OrderService {
     }
 
     public Order placeGroupOrder(User owner,Group group){
-        return orderDAO.createGroupOrder(owner, group);
+        Order groupOrder = orderDAO.createGroupOrder(owner, group);
+        groupOrder.setStatusId(OrderDAO.STATUS_INITIATED);
+        orderDAO.updateOrder(groupOrder);
+        return groupOrder;
     }
 
     public void removeOrder(Order order){
@@ -35,13 +38,13 @@ public class OrderService {
     public List<Order> getUserOrders(User user){
         return orderDAO.findByUserId(user.getId());
     }
-
-    public void addOrderItem(Order order,MenuItem menuItem){
-        orderItemDAO.createOrderItem(order,menuItem);
+    public List<Order> getUserOrders(User user, Integer statusId){
+        return orderDAO.findByUserId(user.getId(),statusId);
     }
 
-    public void removeItemsByType(Order currentOrder, MenuItem type) {
-        List<OrderItem> orderItems = orderItemDAO.findByOrder(currentOrder);
+
+    public void removeItemsByType(Order order, User user, MenuItem type) {
+        List<OrderItem> orderItems = orderItemDAO.findByOrderAndOwner(order, user);
         for (OrderItem orderItem:orderItems){
             if (orderItem.getMenuItemId().equals(type.getId()))
                 orderItemDAO.removeOrderItem(orderItem);
@@ -68,5 +71,13 @@ public class OrderService {
 
         return res;
 
+    }
+
+    public void updateOrder(Order order) {
+        orderDAO.updateOrder(order);
+    }
+
+    public void addOrderItem(Order order, User user, MenuItem menuItem) {
+        orderItemDAO.createOrderItem(order,user, menuItem);
     }
 }

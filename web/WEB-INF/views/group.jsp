@@ -1,5 +1,6 @@
 <%--@elvariable id="isOwner" type="java.lang.Boolean"--%>
 <%--@elvariable id="isMember" type="java.lang.Boolean"--%>
+<%--@elvariable id="groupOrderExists" type="java.lang.Boolean"--%>
 
 <jsp:useBean id="group" scope="request" type="zarudnyi.trials.restaurant.model.entity.Group"/>
 <%@include file="templates/header.jsp" %>
@@ -8,7 +9,10 @@
     <h4 contenteditable="${isOwner}">${group.name}</h4>
     <c:choose>
         <c:when test="${isOwner}">
-            <a href="removeGroup?group_id=${group.id}">[Remove]</a> <br>
+            <c:if test="${!groupOrderExists}">
+                <a href="groupOrder?group_id=${group.id}">[Place Order]</a> <br>
+
+            </c:if>
         </c:when>
         <c:otherwise><%--@elvariable id="owner" type="zarudnyi.trials.restaurant.model.entity.User"--%>
             ${owner.login} (${owner.fname} ${owner.lname})

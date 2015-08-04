@@ -66,9 +66,7 @@ public class GroupService {
         return groupDAO.getCandidates(g);
     }
 
-    public void ascInviteToGroup(User candidate, Group group){
-        groupDAO.addUser(group,candidate,GroupDAO.CANDIDATE_OPTION);
-    }
+
 
     public User getOwner(Group g){
         return userDAO.findById(groupDAO.getOwnerId(g));

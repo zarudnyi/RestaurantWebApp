@@ -1,16 +1,27 @@
-<aside class="sidebar">
+<sec:authorize access="isAuthenticated()" var="authenticated"/>
+<sec:authentication var="user" property="principal"/>
 
-    <h3>My Order</h3>
-    <ul class="blog">
-        <li>Item1</li>
-        <li>Item2</li>
-        <li>Item3</li>
-    </ul>
-    <div class="border3"></div>
-    <h3>Group Order</h3>
-    <ul class="blog">
-        <li>Item1</li>
-        <li>Item2</li>
-        <li>Item3</li>
-    </ul>
+<script type="text/javascript">
+    summarySelected = true;
+
+    <c:choose>
+    <c:when test="${authenticated}">
+    currentUser = '${user.username}';
+    </c:when>
+    <c:otherwise>
+    currentUser = '';
+    </c:otherwise>
+    </c:choose>
+    $(document).ready(function () {
+        if (${authenticated}==true
+        )
+        refreshOrderPanel();
+    });
+
+</script>
+<aside class="sidebar">
+    <div id="order-panel">
+
+    </div>
+
 </aside>
