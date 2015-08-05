@@ -2,6 +2,8 @@ package zarudnyi.trials.restaurant.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,6 +12,7 @@ import zarudnyi.trials.restaurant.model.dao.OrderDAO;
 import zarudnyi.trials.restaurant.model.entity.Group;
 import zarudnyi.trials.restaurant.model.entity.Order;
 import zarudnyi.trials.restaurant.model.entity.User;
+import zarudnyi.trials.restaurant.model.validator.GroupValidator;
 import zarudnyi.trials.restaurant.services.impl.GroupService;
 import zarudnyi.trials.restaurant.services.impl.OrderService;
 import zarudnyi.trials.restaurant.services.impl.UserService;
@@ -28,6 +31,9 @@ public class GroupController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private GroupValidator groupValidator;
 
     @RequestMapping(value = {"/removeGroup"}, method = {RequestMethod.GET})
     public ModelAndView removeGroup(@RequestParam("group_id") Integer group_id) {
@@ -148,12 +154,12 @@ public class GroupController {
                 modelAndView.addObject("isOwner", isOwner);
                 List<Order> groupOrders = orderService.getUserInitiatedGroupOrders(currentUser);
                 boolean groupOrderExists = false;
-                for (Order order:groupOrders){
+                for (Order order : groupOrders) {
                     if (group.getId().equals(order.getGroupId()))
                         groupOrderExists = true;
                 }
 
-                modelAndView.addObject("groupOrderExists",groupOrderExists);
+                modelAndView.addObject("groupOrderExists", groupOrderExists);
                 modelAndView.addObject("currUser", currentUser);
             }
 
@@ -199,15 +205,45 @@ public class GroupController {
         try {
             User currentUser = userService.currentUser();
             Group group = groupService.findById(group_id);
-            groupService.isOwner(currentUser,group);
+            groupService.isOwner(currentUser, group);
             orderService.placeGroupOrder(currentUser, group);
 
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return "redirect:/group?id="+group_id;
+        return "redirect:/group?id=" + group_id;
+    }
+
+    @RequestMapping(value = {"/createGroup"}, method = {RequestMethod.GET})
+    public ModelAndView createGroupPage() {
+
+        ModelAndView modelAndView = new ModelAndView();
+        Group group = new Group();
+        group.setName(userService.currentUserLogin()+" group");
+        modelAndView.addObject("group", group);
+        modelAndView.setViewName("createGroup");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = {"/createGroup"}, method = {RequestMethod.POST})
+    public ModelAndView createGroup(@ModelAttribute Group group, BindingResult result) {
+
+        groupValidator.validate (group, result);
+
+        if (result.hasErrors()){
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.setViewName("createGroup");
+            modelAndView.addObject("group",group);
+            return modelAndView;
+        }else {
+            groupService.createGroup(userService.currentUser(), group);
+            return new ModelAndView("redirect:/group?id=" + group.getId());
+
+        }
+
+
     }
 
 }

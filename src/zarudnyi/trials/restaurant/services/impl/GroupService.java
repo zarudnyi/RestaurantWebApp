@@ -76,4 +76,14 @@ public class GroupService {
     public List<Group> allGroups() {
         return groupDAO.findAll();
     }
+
+    public Group createGroup(User owner) {
+        return groupDAO.createGroup(owner);
+    }
+
+    public void createGroup(User user, Group group) {
+        Group created = createGroup(user);
+        group.setId(created.getId());
+        groupDAO.updateGroup(group);
+    }
 }

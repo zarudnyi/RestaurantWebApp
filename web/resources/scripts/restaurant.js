@@ -88,7 +88,7 @@ function setCurrentOrder(id) {
     });
 }
 
-function renderDetailedOrderTable(order, orderItems) {
+function renderDetailedOrderTable(order, data) {
     $("#order-panel").append("<table id = 'order-" + order.id + "' style='border-spacing: 7px 11px; border-collapse: separate;'><tbody>");
     var table = $("#order-panel").children("#order-" + order.id);
 
@@ -98,10 +98,11 @@ function renderDetailedOrderTable(order, orderItems) {
             var totalPrice = 0;
 
 
-            table.append("<tr id='tr-" + trId + "'>");
+            table.append("<tr id='tr-" + i + "'>");
 
             var row = table.children("tbody:first").children("#tr-" + i);
 
+           // alert(row+ " "+ "#tr-" + i)
             renderCell(row, user.login);
             renderCell(row, "");
             renderCell(row, "");
@@ -110,7 +111,7 @@ function renderDetailedOrderTable(order, orderItems) {
 
             table.append("</tr>");
 
-
+            var subTotal = 0;
             for (var j in user.items) {
 
                 var item = user.items[j];
@@ -119,12 +120,12 @@ function renderDetailedOrderTable(order, orderItems) {
                 var trId = i + "-" + j;
                 table.append("<tr id='tr-" + trId + "'>");
 
-                var row = table.children("tbody:first").children("#tr-" + i);
+                row = table.children("tbody:first").children("#tr-" + trId);
 
                 renderCell(row, item.itemName);
                 renderCell(row, item.qty);
                 renderCell(row, price(item.price * item.qty));
-                totalPrice += item.price * item.qty;
+                subTotal += item.price * item.qty;
                 if (currentUser == user.login)
                     renderCell(row, "<a style='cursor: pointer;' onclick='deleteOrderItem(" + order.id + " , " + item.itemId + "); refreshOrderPanel();'> [X]</a>");
                 else
@@ -134,18 +135,34 @@ function renderDetailedOrderTable(order, orderItems) {
                 table.append("</tr>");
 
             }
-            i++;
-            table.append("<tr id='tr-" + i + "'>");
-            var row = table.children("tbody:first").children("#tr-" + i);
+            j++;
+            trId = i + "-" + j;
+            totalPrice+=subTotal;
 
-            renderCell(row, "Total");
+            table.append("<tr id='tr-" + trId + "'>");
+            var row = table.children("tbody:first").children("#tr-" + trId);
+
+            renderCell(row, "SubTotal");
             renderCell(row, "");
-            renderCell(row, price(totalPrice));
+            renderCell(row, price(subTotal));
             renderCell(row, "");
 
 
             table.append("</tr>");
         }
+        i++;
+        trId = i;
+
+        table.append("<tr id='tr-" + trId + "'>");
+        var row = table.children("tbody:first").children("#tr-" + trId);
+
+        renderCell(row, "Total");
+        renderCell(row, "");
+        renderCell(row, price(totalPrice));
+        renderCell(row, "<a style='cursor: pointer;' onclick='checkOut(" + order.id + ");'> [Checkout] </a>");
+
+
+        table.append("</tr>");
     }
     else {
         table.append("[empty]");
@@ -206,9 +223,11 @@ function renderSummaryOrderTable(order, data) {
                 var item = user.items[j];
                 console.log(item);
 
-                table.append("<tr id='tr-" + j + "'>");
+                var trId = i + "-" + j;
 
-                var row = table.children("tbody:first").children("#tr-" + j);
+                table.append("<tr id='tr-" + trId + "'>");
+
+                var row = table.children("tbody:first").children("#tr-" + trId);
 
                 renderCell(row, item.itemName);
                 renderCell(row, item.qty);
@@ -221,18 +240,19 @@ function renderSummaryOrderTable(order, data) {
                 table.append("</tr>");
 
             }
-            j++;
-            table.append("<tr id='tr-" + j + "'>");
-            var row = table.children("tbody:first").children("#tr-" + j);
 
-            renderCell(row, "Total");
-            renderCell(row, "");
-            renderCell(row, price(totalPrice));
-            renderCell(row, "");
-
-
-            table.append("</tr>");
         }
+        i++;
+        table.append("<tr id='tr-" + i + "'>");
+        var row = table.children("tbody:first").children("#tr-" + i);
+
+        renderCell(row, "Total");
+        renderCell(row, "");
+        renderCell(row, price(totalPrice));
+        renderCell(row, "<a style='cursor: pointer;' onclick='checkOut(" + order.id + ");'> [Checkout] </a>");
+
+
+        table.append("</tr>");
     }
     else {
         table.append("[empty]");
@@ -252,4 +272,15 @@ function price(intPrice) {
         return "$" + (intPrice / 100).toFixed(2);
     else
         return "Free!";
+}
+
+
+function checkOut (orderId){
+    $("#order-checkout").dialog();
+    $('#datepicker').appendDtpicker({
+        "autodateOnStart": false
+    });
+    $('#order-id').val(orderId);
+
+
 }

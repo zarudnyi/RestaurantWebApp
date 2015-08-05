@@ -4,6 +4,10 @@
 <%@include file="templates/header.jsp" %>
 <div class="border2"></div>
 <article>
+    <sec:authorize access="isAuthenticated()" var="authenticated"/>
+    <c:if test="${authenticated}">
+        <a href="createGroup">[Create Group]</a><br><br>
+    </c:if>
     <c:forEach items="${groups}" var="group">
         <c:set var="owner" scope="session" value="${owners.get(group)}"/>
 

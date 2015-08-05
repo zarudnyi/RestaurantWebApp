@@ -19,7 +19,9 @@ public class GroupSQLiteDAOImpl extends RestaurantAppSQLiteDao implements GroupD
 
     public Group createGroup(User owner) {
         Integer id = genericInsert("insert into groups (name,description) values(null,null)");
-        return findById(id);
+        Group group = findById(id);
+        setGroupOwner(group,owner);
+        return group;
     }
 
     public Group findById(Integer id) {
@@ -73,7 +75,7 @@ public class GroupSQLiteDAOImpl extends RestaurantAppSQLiteDao implements GroupD
     }
 
     public Integer getOwnerId(Group group) {
-        return jdbc.queryForObject("SELECT groups.id FROM groups JOIN user_group ON groups.id = user_group.group_id WHERE groups.id=? AND user_group.option=? ", new Object[]{group.getId(), OWNER_OPTION}, Integer.class);
+        return jdbc.queryForObject("SELECT user_group.user_id FROM groups JOIN user_group ON groups.id = user_group.group_id WHERE groups.id=? AND user_group.option=? ", new Object[]{group.getId(), OWNER_OPTION}, Integer.class);
     }
 
 

@@ -49,7 +49,7 @@ public class OrderSQLiteDAOImpl extends RestaurantAppSQLiteDao implements OrderD
     }
 
     public List<Order> findByUserId(Integer userId, Integer statusId) {
-        return jdbc.query("SELECT * FROM orders WHERE user_id=? and status_id=?", new Object[]{userId,statusId}, new BeanPropertyRowMapper<Order>(Order.class));
+        return jdbc.query("SELECT * FROM orders WHERE (user_id=? or group_id in (SELECT group_id FROM user_group WHERE user_id =? and option in (0,1)) ) and status_id=?", new Object[]{userId, userId,statusId}, new BeanPropertyRowMapper<Order>(Order.class));
     }
 
     public List<Order> findAll() {

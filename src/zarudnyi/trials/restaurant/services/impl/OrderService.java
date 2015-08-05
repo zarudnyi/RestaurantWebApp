@@ -3,6 +3,7 @@ package zarudnyi.trials.restaurant.services.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import zarudnyi.trials.restaurant.config.AppConfig;
+import zarudnyi.trials.restaurant.model.dao.MenuDAO;
 import zarudnyi.trials.restaurant.model.dao.OrderDAO;
 import zarudnyi.trials.restaurant.model.dao.OrderItemDAO;
 import zarudnyi.trials.restaurant.model.entity.*;
@@ -18,6 +19,8 @@ public class OrderService {
     @Autowired
     private OrderItemDAO orderItemDAO;
 
+    @Autowired
+    private MenuDAO menuDAO;
 
 
     public Order placeOrder(User user){
@@ -78,6 +81,20 @@ public class OrderService {
     }
 
     public void addOrderItem(Order order, User user, MenuItem menuItem) {
-        orderItemDAO.createOrderItem(order,user, menuItem);
+        orderItemDAO.createOrderItem(order, user, menuItem);
+    }
+
+    public void checkOut(Order order) {
+        order.setStatusId(OrderDAO.STATUS_RECEIVED);
+
+        List<OrderItem> items = orderItemDAO.findByOrder(order);
+        order.setCheckOutSum(0);
+
+        for (OrderItem item:items){
+            order.setCheckOutSum(order.getCheckOutSum()+menuDAO.findItemById(item.getMenuItemId()).getPrice());
+        }
+
+        orderDAO.updateOrder(order);
+
     }
 }

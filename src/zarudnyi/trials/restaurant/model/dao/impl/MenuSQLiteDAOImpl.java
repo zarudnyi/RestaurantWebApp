@@ -22,7 +22,7 @@ public class MenuSQLiteDAOImpl extends RestaurantAppSQLiteDao implements MenuDAO
     }
 
     public MenuItem findItemById(Integer id) {
-        return jdbc.queryForObject("select * from menu join categories on categories.id = menu.category_id where menu.id=?",new Object[]{id}, new MenuItemRowMapper());
+        return jdbc.queryForObject("select * from menu left join categories on categories.id = menu.category_id where menu.id=?",new Object[]{id}, new MenuItemRowMapper());
     }
 
     public List<MenuItem> findAllItems() {
@@ -30,8 +30,8 @@ public class MenuSQLiteDAOImpl extends RestaurantAppSQLiteDao implements MenuDAO
     }
 
     public void updateMenuItem(MenuItem menuItem) {
-        jdbc.update("INSERT or replace INTO menu (id, category_id, name, price, description) VALUES (?,?,?,?,?)",
-                menuItem.getId(),menuItem.getCategory().getId(),menuItem.getName(),menuItem.getPrice(),menuItem.getDescription());
+        jdbc.update("INSERT or replace INTO menu (id, category_id, name, price, description, picture) VALUES (?,?,?,?,?,?)",
+                menuItem.getId(),menuItem.getCategory().getId(),menuItem.getName(),menuItem.getPrice(),menuItem.getDescription(),menuItem.getPicture());
     }
 
     public MenuCategory createCategory() {
@@ -40,6 +40,7 @@ public class MenuSQLiteDAOImpl extends RestaurantAppSQLiteDao implements MenuDAO
     }
 
     public void removeCategory(MenuCategory category) {
+        jdbc.update("DELETE FROM menu WHERE category_id=?",category.getId());
         jdbc.update("DELETE FROM categories WHERE id=?",category.getId());
 
     }

@@ -6,17 +6,25 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Awesome Restaurant</title>
-    <link href="resources/styles/style.css" rel="stylesheet" type="text/css" media="screen"/>
-    <link href="resources/styles/base.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="/resources/styles/style.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="/resources/styles/base.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="/resources/styles/jquery-ui.min.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="/resources/styles/jquery.simple-dtpicker.css" rel="stylesheet" type="text/css" media="screen"/>
 
-    <link href="resources/styles/jumbotron-narrow.css" rel="stylesheet" type="text/css" media="screen"/>
+
+    <link href="/resources/styles/jumbotron-narrow.css" rel="stylesheet" type="text/css" media="screen"/>
 
 
-    <script type="text/javascript" src=" https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.js"></script>
-    <script type="text/javascript" src="resources/scripts/jquery.pikachoose.js"></script>
-    <script type="text/javascript" src="resources/scripts/jquery.cookie.js"></script>
+    <script type="text/javascript" src=" https://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+    <script type="text/javascript" src="/resources/scripts/jquery.pikachoose.js"></script>
+    <script type="text/javascript" src="/resources/scripts/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/resources/scripts/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/resources/scripts/jquery.simple-dtpicker.js"></script>
 
-    <script type="text/javascript" src="resources/scripts/restaurant.js"></script>
+
+    <script type="text/javascript" src="/resources/scripts/restaurant.js"></script>
+    <script type="text/javascript" src="/resources/scripts/restaurant.menu.js"></script>
+
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -41,12 +49,10 @@
             if (window.location.pathname == "/group" || window.location.pathname == "/groups") {
                 $("a[href='groups']").addClass("current");
             }
-            if (window.location.pathname == "/contact" ) {
+            if (window.location.pathname == "/contact") {
                 $("a[href='contact']").addClass("current");
             }
-            if (window.location.pathname == "/admin" ) {
-                $("a[href='admin']").addClass("current");
-            }
+
 
         })
         ;
@@ -63,6 +69,8 @@
                 <li><a href="gallery">Gallery</a></li>
                 <li><a href="profile">
                     <sec:authorize access="isAuthenticated()" var="authenticated"/>
+                    <sec:authorize access="hasRole('ROLE_ADMIN')" var="isAdmin"/>
+
                     <c:choose>
                         <c:when test="${authenticated}">
                             Profile
@@ -79,15 +87,8 @@
                         <li><a href="groups">Groups</a></li>
                     </c:when>
                 </c:choose>
-                <sec:authorize access="hasRole('ROLE_ADMIN')" var="isAdmin" />
-                <c:choose>
-                    <c:when test="${isAdmin}">
-                        <li><a href="admin">Administration</a></li>
-                    </c:when>
-                    <c:otherwise>
-                        <li><a href="contact">Contact</a></li>
-                    </c:otherwise>
-                </c:choose>
+
+                <li><a href="contact">Contact</a></li>
 
             </ul>
         </nav>

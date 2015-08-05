@@ -12,6 +12,7 @@ import org.sqlite.SQLiteDataSource;
 import zarudnyi.trials.restaurant.model.entity.MenuCategory;
 import zarudnyi.trials.restaurant.model.entity.Order;
 import zarudnyi.trials.restaurant.model.entity.User;
+import zarudnyi.trials.restaurant.model.validator.GroupValidator;
 import zarudnyi.trials.restaurant.model.validator.UserValidator;
 import zarudnyi.trials.restaurant.services.impl.GroupService;
 import zarudnyi.trials.restaurant.services.impl.MenuService;
@@ -172,6 +173,11 @@ public class AppConfig {
     @Bean
     public UserValidator userValidator() {
         return new UserValidator();
+    }
+
+    @Bean
+    GroupValidator groupValidator(){
+        return new GroupValidator();
     }
 
     @Bean

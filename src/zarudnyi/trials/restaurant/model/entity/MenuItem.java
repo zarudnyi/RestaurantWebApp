@@ -63,12 +63,12 @@ public class MenuItem {
             return "Free!";
         }
         if (s.length() > 2) {
-            return "$" + s.substring(0, s.length() - 2) + "." + s.substring(s.length() - 2, s.length());
+            return "" + s.substring(0, s.length() - 2) + "." + s.substring(s.length() - 2, s.length());
         }
         if (s.length() > 1)
-            return "$0." + s;
+            return "0." + s;
         if (s.length() == 1) {
-            return "$0.0"+s;
+            return "0.0"+s;
         }
         return "";
     }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 import zarudnyi.trials.restaurant.config.WebConfig;
 import zarudnyi.trials.restaurant.model.entity.*;
 import zarudnyi.trials.restaurant.services.impl.GroupService;
@@ -15,10 +16,10 @@ import zarudnyi.trials.restaurant.services.impl.MenuService;
 import zarudnyi.trials.restaurant.services.impl.OrderService;
 import zarudnyi.trials.restaurant.services.impl.UserService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "/api/order/**")
@@ -180,6 +181,32 @@ public class OrderController {
 
 
         return response.toString();
+    }
+
+    @RequestMapping(value = {"/checkOut"}, method = {RequestMethod.POST})
+    public String checkOut(@RequestParam("date") String date, @RequestParam("order_id") Integer orderId, HttpServletResponse response) {
+
+
+        try {
+
+            SimpleDateFormat parserSDF=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Order order = orderService.findById(orderId);
+
+            order.setOrderDate(parserSDF.parse(date)  );
+            orderService.checkOut(order);
+
+            if (orderId.equals(orderHolder.getUserOrder().getId())){
+                orderHolder.newUserOrder();
+            }
+            response.sendRedirect("/profile");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            return "";
+
+
+        }
     }
 
     private static class OrderItemResponse{

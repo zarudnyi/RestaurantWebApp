@@ -21,10 +21,11 @@ import zarudnyi.trials.restaurant.services.impl.UserService;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.List;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan({ "zarudnyi.trials.restaurant.config", "zarudnyi.trials.restaurant.controllers","zarudnyi.trials.restaurant.model.dao.impl"  })
+@ComponentScan({"zarudnyi.trials.restaurant.config", "zarudnyi.trials.restaurant.controllers", "zarudnyi.trials.restaurant.model.dao.impl"})
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
@@ -37,7 +38,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public MainController mainController(){
+    public MainController mainController() {
         return new MainController();
     }
 
@@ -47,7 +48,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public InternalResourceViewResolver internalResourceViewResolver(){
+    public InternalResourceViewResolver internalResourceViewResolver() {
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
         viewResolver.setExposeContextBeansAsAttributes(true);
 
@@ -57,14 +58,12 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     @Scope("session")
-    CurrentOrderHolder orderHolder(){
+    CurrentOrderHolder orderHolder() {
         return new CurrentOrderHolder();
     }
 
 
-
-
-    public static class CurrentOrderHolder{
+    public static class CurrentOrderHolder {
 
         @Autowired
         private UserService userService;
@@ -79,6 +78,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         public Order getCurrentOrder() {
             return currentOrder;
         }
+
         public void setCurrentOrder(Order currentOrder) {
             this.currentOrder = currentOrder;
         }
@@ -87,29 +87,37 @@ public class WebConfig extends WebMvcConfigurerAdapter {
             return userOrder;
         }
 
-        public Order setUserOrder(Order order) {
-            return userOrder=order;
+        public void newUserOrder(){
+            userOrder = orderService.placeOrder(userService.currentUser());
+            userOrder.setStatusId(OrderDAO.STATUS_INITIATED);
+            orderService.updateOrder(userOrder);
         }
 
+        public Order setUserOrder(Order order) {
+            return userOrder = order;
+        }
 
 
         @PostConstruct
         public void init() throws Exception {
-            if (orderService.getUserOrders(userService.currentUser(),OrderDAO.STATUS_INITIATED).isEmpty()){
-                userOrder = orderService.placeOrder(userService.currentUser());
-                userOrder.setStatusId(OrderDAO.STATUS_INITIATED);
-                orderService.updateOrder(userOrder);
-            }else {
-                userOrder = orderService.getUserOrders(userService.currentUser(),OrderDAO.STATUS_INITIATED).get(0);
+            List<Order> userOrders = orderService.getUserOrders(userService.currentUser(), OrderDAO.STATUS_INITIATED);
+
+            boolean found = false;
+            for (Order order : userOrders) {
+                if (order.getGroupId() == null) {
+                    userOrder = order;
+                    found = true;
+                    break;
+                }
+            }
+
+
+            if (!found) {
+                newUserOrder();
             }
             currentOrder = userOrder;
 
 
-        }
-
-        @PreDestroy
-        public void removeUserOrder(){
-            orderService.removeOrder(userOrder);
         }
 
 

@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -47,6 +49,8 @@ public class MainController {
         return model;
     }
 
+
+
     @RequestMapping(value = {"/menu"}, method = {RequestMethod.GET})
     public ModelAndView menuPage(){
         ModelAndView model = new ModelAndView();
@@ -56,11 +60,13 @@ public class MainController {
         List<MenuItem> allItems = menuService.getAllItems();
 
         Map<MenuCategory,List<MenuItem>> menu = new HashMap<MenuCategory, List<MenuItem>>();
+        List<MenuCategory> allCategories = menuService.getAllCategories();
+
+        for (MenuCategory category:allCategories){
+            menu.put(category,new ArrayList<MenuItem>());
+        }
 
         for (MenuItem item : allItems){
-            if (!menu.containsKey(item.getCategory())){
-                menu.put(item.getCategory(),new ArrayList<MenuItem>());
-            }
             menu.get(item.getCategory()).add(item);
         }
 
@@ -87,8 +93,71 @@ public class MainController {
     }
 
 
+    @RequestMapping(value = {"/menu/createItem"}, method = {RequestMethod.GET})
+    public ModelAndView createItemPage(){
+        ModelAndView model = new ModelAndView();
+        model.addObject("item", new CreateItemStub());
+        Map<Integer,String> categoriesMap = new HashMap<Integer, String>();
 
+        List<MenuCategory> allCategories = menuService.getAllCategories();
+        for (MenuCategory category:allCategories){
+            categoriesMap.put(category.getId(),category.getName());
+        }
 
+        model.addObject("categories", categoriesMap);
+        model.setViewName("createItem");
+        return model;
+    }
+    @RequestMapping(value = {"/menu/createItem"}, method = {RequestMethod.POST})
+    public ModelAndView createItem(@ModelAttribute CreateItemStub itemStub,BindingResult result){
+
+        itemStub.setCategory(menuService.getCategoryById(itemStub.getCategoryId()));
+        if (itemStub.getFloatPrice()==null)
+            itemStub.setFloatPrice((float) 0);
+        itemStub.setPrice(Math.round(itemStub.getFloatPrice() * 100));
+
+        menuService.createItem(itemStub);
+
+        return new ModelAndView("redirect:/menu");
+    }
+
+    @RequestMapping(value = {"/menu/createCategory"}, method = {RequestMethod.GET})
+    public ModelAndView createCategoryPage(){
+        ModelAndView model = new ModelAndView();
+        model.addObject("category", new MenuCategory());
+
+        model.setViewName("createCategory");
+        return model;
+    }
+    @RequestMapping(value = {"/menu/createCategory"}, method = {RequestMethod.POST})
+    public ModelAndView createCategory(@ModelAttribute MenuCategory menuCategory,BindingResult result){
+        menuService.createCategory(menuCategory);
+
+        return new ModelAndView("redirect:/menu");
+    }
+
+    public static class CreateItemStub extends MenuItem{
+        private Integer categoryId;
+        private Float floatPrice;
+
+        public CreateItemStub(){}
+
+        public Integer getCategoryId() {
+            return categoryId;
+        }
+
+        public void setCategoryId(Integer categoryId) {
+            this.categoryId = categoryId;
+        }
+
+        public Float getFloatPrice() {
+            return floatPrice;
+        }
+
+        public void setFloatPrice(Float floatPrice) {
+            this.floatPrice = floatPrice;
+        }
+    }
 
 
 
